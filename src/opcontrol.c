@@ -19,7 +19,7 @@
 #define MOTOR_PORT_SHOOTER_REV		0
 
 /*----------------------------------------------------
- * 				Global Teleop Variabls				 |
+ * 				Global Teleop Variables				 |
  *----------------------------------------------------
  */
 int conveyorFlag = 0;
@@ -142,7 +142,7 @@ float pidController(float Kp, float Ki, float Kd, float setpoint,
  */
 
 /**
- * Updates the shooter speed gloabl variable. This uses PROS tasks to ensure that this runs
+ * Updates the shooter speed global variable. This uses PROS tasks to ensure that this runs
  * precisely every 10ms; much more precisely than the general teleop loop. The even dt is
  * critical to make sure that the derivative doesn't add too much noise.
  */
