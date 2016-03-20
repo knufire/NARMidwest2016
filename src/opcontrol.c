@@ -7,16 +7,17 @@
 #define SHOOTER_SPEED_SHORT			1000	// Shooter RPM for close shot
 #define SHOOTER_SPEED_MID			1500	// Shooter RPM for mid shot
 #define SHOOTER_SPEED_LONG			2800	// Shooter RPM for far/fullcourt shot
-#define SHOOTER_ENCODER_POLL_DELAY 	100		// Rate in hz to poll shooter encoder
-#define MOTOR_PORT_DRIVE_LEFT		0
-#define MOTOR_PORT_DRIVE_RIGHT		0
-#define MOTOR_PORT_DRIVE_BACK		0
-#define MOTOR_PORT_INTAKE_FWD		3
-#define MOTOR_PORT_INTAKE_REV		8
-#define MOTOR_PORT_CONEVYOR_FWD 	0
-#define MOTOR_PORT_CONVEYOR_REV 	9
-#define MOTOR_PORT_SHOOTER_FWD		0
-#define MOTOR_PORT_SHOOTER_REV		0
+#define SHOOTER_ENCODER_POLL_RATE 	100		// Rate in hz to poll shooter encoder
+#define MOTOR_PORT_DRIVE_LEFT		8
+#define MOTOR_PORT_DRIVE_RIGHT		3
+#define MOTOR_PORT_DRIVE_BACK		2
+#define MOTOR_PORT_INTAKE			9
+#define MOTOR_PORT_CONVEYOR_FWD		1
+#define MOTOR_PORT_CONVEYOR_REV		10
+#define MOTOR_PORT_SHOOTER_FWD1		4
+#define MOTOR_PORT_SHOOTER_REV1		6
+#define MOTOR_PORT_SHOOTER_FWD2		5
+#define MOTOR_PORT_SHOOTER_REV2		7
 
 /*----------------------------------------------------
  * 				Global Teleop Variables				 |
@@ -148,9 +149,10 @@ float pidController(float Kp, float Ki, float Kd, float setpoint,
  */
 void updateShooterSpeedTask(void *ignore) {
 	float encoderTicks = encoderGet(shooterEncoder);
-	shooterSpeed = (encoderTicks / 360.0) / (1/(SHOOTER_ENCODER_POLL_DELAY) * 60);
+	shooterSpeed = ((encoderTicks / 360.0) / (1 / (SHOOTER_ENCODER_POLL_RATE) * 60));
 	encoderReset(shooterEncoder);
-	taskDelayUntil(&lastShooterSpeedLoopStopTime, (1/SHOOTER_ENCODER_POLL_DELAY) * 1000);
+	taskDelayUntil(&lastShooterSpeedLoopStopTime,
+			(1 / SHOOTER_ENCODER_POLL_RATE) * 1000);
 }
 
 /*---------------------------------------------------
@@ -158,12 +160,13 @@ void updateShooterSpeedTask(void *ignore) {
  * --------------------------------------------------
  */
 
-void updateDrive() {
+void updateDriveTask(void *ignore) {
 	//Grab Joystick Values
 	float transX = joystickGetAnalog(1, 4) / 127;
 	float transY = joystickGetAnalog(1, 3) / 127;
 	float rotation = joystickGetAnalog(1, 2) / 127;
 
+	//All the constants are based on drive geometry.
 	float wheel1 = .160458 * transX + 0.57735 * transY + 0.41977 * rotation;
 	float wheel2 = .160458 * transX - 0.57735 * transY + 0.41977 * rotation;
 	float wheel3 = -0.83954 * transX + 0.41977 * rotation;
@@ -173,13 +176,14 @@ void updateDrive() {
 	wheel3 = limit(wheel3, -1, 1);
 
 	//TODO: Uncomment when drive is rewired. Fix port numbers.
-//	motorSet(MOTOR_PORT_DRIVE_LEFT, *-127);
-//	motorSet(MOTOR_PORT_DRIVE_RIGHT, wheel2*-127);
-//	motorSet(MOTOR_PORT_DRIVE_BACK, wheel3*-127);
+		motorSet(MOTOR_PORT_DRIVE_LEFT, wheel1*-127);
+		motorSet(MOTOR_PORT_DRIVE_RIGHT, wheel2*-127);
+		motorSet(MOTOR_PORT_DRIVE_BACK, wheel3*-127);
+	taskDelay(20);
 
 }
 
-void updateIntake() {
+void updateIntakeTask(void *ignore) {
 	//Grab Joystick values
 	bool intakeIn = joystickGetDigital(1, 6, JOY_UP);
 	bool intakeOut = joystickGetDigital(1, 6, JOY_DOWN);
@@ -193,8 +197,8 @@ void updateIntake() {
 			conveyorOut > conveyorOutLastVal, conveyorFlag);
 
 	//Set motors based on
-	motorSet(MOTOR_PORT_INTAKE_FWD, intakeFlag * 127);
-	motorSet(MOTOR_PORT_INTAKE_REV, intakeFlag * -127);
+	motorSet(MOTOR_PORT_INTAKE, intakeFlag * 127);
+	motorSet(MOTOR_PORT_CONVEYOR_FWD, conveyorFlag * 127);
 	motorSet(MOTOR_PORT_CONVEYOR_REV, conveyorFlag * -127);
 
 	//TODO: Change vertical conveyor to be hold-to-run for a fire button.
@@ -204,9 +208,10 @@ void updateIntake() {
 	intakeOutLastVal = intakeOut;
 	conveyorInLastVal = conveyorIn;
 	conveyorOutLastVal = conveyorOut;
+	taskDelay(20);
 }
 
-void updateShooter() {
+void updateShooterTask(void *ignore) {
 	bool shooterOn = joystickGetDigital(1, 8, JOY_UP);
 	bool shooterOff = joystickGetDigital(1, 8, JOY_DOWN);
 	bool shooterFull = joystickGetDigital(1, 8, JOY_RIGHT);
@@ -232,7 +237,13 @@ void updateShooter() {
 		motorStop(6);
 		motorStop(7);
 	}
+	taskDelay(10);
 }
+
+//void debuggingTask(void *ignore) {
+//	fprint ("%f\n", shooterSpeed);
+//	taskDelay(100);
+//}
 
 /*
  * Runs the user operator control code. This function will be started in its own task with the
@@ -256,11 +267,13 @@ void operatorControl() {
 	lastShooterSpeedLoopStopTime = millis();
 	while (1) {
 		taskCreate(updateShooterSpeedTask, TASK_DEFAULT_STACK_SIZE, NULL,
+				TASK_PRIORITY_HIGHEST);
+		taskCreate(updateDriveTask, TASK_DEFAULT_STACK_SIZE, NULL,
 				TASK_PRIORITY_DEFAULT);
-		//TODO: Change other subsystems to PROS tasks for better timing control.
-		updateDrive();
-		updateIntake();
-		updateShooter();
-		delay(20);
+		taskCreate(updateIntakeTask, TASK_DEFAULT_STACK_SIZE, NULL,
+				TASK_PRIORITY_DEFAULT);
+		taskCreate(updateShooterTask, TASK_DEFAULT_STACK_SIZE, NULL,
+				TASK_PRIORITY_HIGHEST - 1);
+//		taskCreate(debuggingTask, TASK_DEFAULT_STACK_SIZE, NULL, TASK_PRIORITY_LOWEST+1);
 	}
 }
