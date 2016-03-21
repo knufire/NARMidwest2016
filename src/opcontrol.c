@@ -239,10 +239,10 @@ void updateShooterTask(void *ignore) {
 	taskDelay(10);
 }
 
-void debuggingTask(void *ignore) {
-	fprintf("%f\n", shooterSpeed);
-	taskDelay(100);
-}
+//void debuggingTask(void *ignore) {
+//	fprintf("%f\n", shooterSpeed);
+//	taskDelay(100);
+//}
 
 /*
  * Runs the user operator control code. This function will be started in its own task with the
@@ -273,6 +273,6 @@ void operatorControl() {
 				TASK_PRIORITY_DEFAULT);
 		taskCreate(updateShooterTask, TASK_DEFAULT_STACK_SIZE, NULL,
 				TASK_PRIORITY_HIGHEST - 1);
-		taskCreate(debuggingTask, TASK_DEFAULT_STACK_SIZE, NULL, TASK_PRIORITY_LOWEST+1);
+		//taskCreate(debuggingTask, TASK_DEFAULT_STACK_SIZE, NULL, TASK_PRIORITY_LOWEST+1);
 	}
 }
