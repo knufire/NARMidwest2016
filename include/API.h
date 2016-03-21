@@ -115,7 +115,7 @@ bool isOnline();
  * Gets the value of a control axis on the VEX joystick. Returns the value from -127 to 127,
  * or 0 if no joystick is connected to the requested slot.
  *
- * @param joystick the   slot to check
+ * @param joystick the joystick slot to check
  * @param axis one of 1, 2, 3, 4, ACCEL_X, or ACCEL_Y
  */
 int joystickGetAnalog(unsigned char joystick, unsigned char axis);

@@ -19,6 +19,7 @@
 #define MOTOR_PORT_SHOOTER_FWD2		5
 #define MOTOR_PORT_SHOOTER_REV2		7
 
+//lkasdf//
 /*----------------------------------------------------
  * 				Global Teleop Variables				 |
  *----------------------------------------------------
