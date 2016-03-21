@@ -1,4 +1,9 @@
-#include "main.h"
+#include <stdbool.h>
+#include <stdlib.h>
+
+#include "../include/API.h"
+#include "../include/main.h"
+#include "../include/math.h"
 
 /*---------------------------------------------------
  * 					 CONSTANTS						|
@@ -168,9 +173,10 @@ void updateDriveTask(void *ignore) {
 	float rotation = joystickGetAnalog(1, 2) / 127;
 
 	//All the constants are based on drive geometry.
-	float wheel1 = .160458 * transX + 0.57735 * transY + 0.41977 * rotation;
-	float wheel2 = .160458 * transX - 0.57735 * transY + 0.41977 * rotation;
-	float wheel3 = -0.83954 * transX + 0.41977 * rotation * 2;
+	float mult = (127-fabs( joystickGetAnalog(1, 2) /2 )) / 127;
+	float wheel1 = (.160458 * transX + 0.57735 * transY) * mult + rotation;
+	float wheel2 = (.160458 * transX - 0.57735 * transY) * mult + rotation;
+	float wheel3 = 0.83954 * transX * mult - rotation;
 
 	wheel1 = limit(wheel1, -1, 1);
 	wheel2 = limit(wheel2, -1, 1);
@@ -178,7 +184,7 @@ void updateDriveTask(void *ignore) {
 
 	motorSet(MOTOR_PORT_DRIVE_LEFT, wheel1*127);
 	motorSet(MOTOR_PORT_DRIVE_RIGHT, wheel2*127);
-	motorSet(MOTOR_PORT_DRIVE_BACK, wheel3*-127);
+	motorSet(MOTOR_PORT_DRIVE_BACK, wheel3*127);
 	taskDelay(20);
 
 }
