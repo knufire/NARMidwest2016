@@ -170,7 +170,7 @@ void updateDriveTask(void *ignore) {
 	//All the constants are based on drive geometry.
 	float wheel1 = .160458 * transX + 0.57735 * transY + 0.41977 * rotation;
 	float wheel2 = .160458 * transX - 0.57735 * transY + 0.41977 * rotation;
-	float wheel3 = -0.83954 * transX + 0.41977 * rotation;
+	float wheel3 = -0.83954 * transX + 0.41977 * rotation * 2;
 
 	wheel1 = limit(wheel1, -1, 1);
 	wheel2 = limit(wheel2, -1, 1);
