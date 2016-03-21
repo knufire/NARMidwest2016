@@ -28,6 +28,7 @@ int intakeFlag = 0;
 int shooterFlag = 0;
 float shooterSpeed = 0;
 unsigned long lastShooterSpeedLoopStopTime;
+//Hi this is a comment
 
 //Storage for rising edge of buttons
 bool intakeInLastVal = false;
@@ -176,9 +177,9 @@ void updateDriveTask(void *ignore) {
 	wheel3 = limit(wheel3, -1, 1);
 
 	//TODO: Uncomment when drive is rewired. Fix port numbers.
-		motorSet(MOTOR_PORT_DRIVE_LEFT, wheel1*-127);
-		motorSet(MOTOR_PORT_DRIVE_RIGHT, wheel2*-127);
-		motorSet(MOTOR_PORT_DRIVE_BACK, wheel3*-127);
+	motorSet(MOTOR_PORT_DRIVE_LEFT, wheel1*-127);
+	motorSet(MOTOR_PORT_DRIVE_RIGHT, wheel2*-127);
+	motorSet(MOTOR_PORT_DRIVE_BACK, wheel3*-127);
 	taskDelay(20);
 
 }
