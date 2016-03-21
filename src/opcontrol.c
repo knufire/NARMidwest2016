@@ -275,5 +275,6 @@ void operatorControl() {
 		taskCreate(updateShooterTask, TASK_DEFAULT_STACK_SIZE, NULL,
 				TASK_PRIORITY_HIGHEST - 1);
 		//taskCreate(debuggingTask, TASK_DEFAULT_STACK_SIZE, NULL, TASK_PRIORITY_LOWEST+1);
+		delay(5);
 	}
 }
