@@ -176,8 +176,8 @@ void updateDriveTask(void *ignore) {
 	wheel2 = limit(wheel2, -1, 1);
 	wheel3 = limit(wheel3, -1, 1);
 
-	motorSet(MOTOR_PORT_DRIVE_LEFT, wheel1*-127);
-	motorSet(MOTOR_PORT_DRIVE_RIGHT, wheel2*-127);
+	motorSet(MOTOR_PORT_DRIVE_LEFT, wheel1*127);
+	motorSet(MOTOR_PORT_DRIVE_RIGHT, wheel2*127);
 	motorSet(MOTOR_PORT_DRIVE_BACK, wheel3*-127);
 	taskDelay(20);
 
@@ -197,9 +197,9 @@ void updateIntakeTask(void *ignore) {
 			conveyorOut > conveyorOutLastVal, conveyorFlag);
 
 	//Set motors based on
-	motorSet(MOTOR_PORT_INTAKE, intakeFlag * 127);
-	motorSet(MOTOR_PORT_CONVEYOR_FWD, conveyorFlag * 127);
-	motorSet(MOTOR_PORT_CONVEYOR_REV, conveyorFlag * -127);
+	motorSet(MOTOR_PORT_INTAKE, intakeFlag * -127);
+	motorSet(MOTOR_PORT_CONVEYOR_FWD, conveyorFlag * -127);
+	motorSet(MOTOR_PORT_CONVEYOR_REV, conveyorFlag * 127);
 
 	//TODO: Change vertical conveyor to be hold-to-run for a fire button.
 
@@ -222,20 +222,20 @@ void updateShooterTask(void *ignore) {
 	//TODO: Integrate bang-bang controller for flywheel speed.
 
 	if (shooterOn) {
-		motorSet(4, -shooterPower * 127);
-		motorSet(5, -shooterPower * 127);
-		motorSet(6, shooterPower * 127);
-		motorSet(7, shooterPower * 127);
+		motorSet(MOTOR_PORT_SHOOTER_FWD1, -shooterPower * 127);
+		motorSet(MOTOR_PORT_SHOOTER_FWD2, -shooterPower * 127);
+		motorSet(MOTOR_PORT_SHOOTER_REV1, shooterPower * 127);
+		motorSet(MOTOR_PORT_SHOOTER_REV2, shooterPower * 127);
 	} else if (shooterFull) {
-		motorSet(4, -127);
-		motorSet(5, -127);
-		motorSet(6, 127);
-		motorSet(7, 127);
+		motorSet(MOTOR_PORT_SHOOTER_FWD1, -127);
+		motorSet(MOTOR_PORT_SHOOTER_FWD2, -127);
+		motorSet(MOTOR_PORT_SHOOTER_REV1, 127);
+		motorSet(MOTOR_PORT_SHOOTER_REV2, 127);
 	} else if (shooterOff) {
-		motorStop(4);
-		motorStop(5);
-		motorStop(6);
-		motorStop(7);
+		motorStop(MOTOR_PORT_SHOOTER_FWD1);
+		motorStop(MOTOR_PORT_SHOOTER_FWD2);
+		motorStop(MOTOR_PORT_SHOOTER_REV1);
+		motorStop(MOTOR_PORT_SHOOTER_REV2);
 	}
 	taskDelay(10);
 }
