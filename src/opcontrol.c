@@ -24,7 +24,6 @@
 #define MOTOR_PORT_SHOOTER_FWD2		5
 #define MOTOR_PORT_SHOOTER_REV2		7
 
-//lkasdf//
 /*----------------------------------------------------
  * 				Global Teleop Variables				 |
  *----------------------------------------------------
@@ -185,6 +184,7 @@ void updateDriveTask(void *ignore) {
 	motorSet(MOTOR_PORT_DRIVE_LEFT, wheel1*127);
 	motorSet(MOTOR_PORT_DRIVE_RIGHT, wheel2*127);
 	motorSet(MOTOR_PORT_DRIVE_BACK, wheel3*127);
+	printf("Debugging works.");
 	taskDelay(20);
 }
 
@@ -279,7 +279,7 @@ void operatorControl() {
 				TASK_PRIORITY_DEFAULT);
 		taskCreate(updateShooterTask, TASK_DEFAULT_STACK_SIZE, NULL,
 				TASK_PRIORITY_HIGHEST - 1);
-		taskCreate(debuggingTask, TASK_DEFAULT_STACK_SIZE, NULL, TASK_PRIORITY_LOWEST+1);
+		taskCreate(debuggingTask, TASK_DEFAULT_STACK_SIZE, NULL, TASK_PRIORITY_DEFAULT);
 		delay(5);
 	}
 }
