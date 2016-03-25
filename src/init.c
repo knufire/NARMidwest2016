@@ -66,10 +66,10 @@ void initializeIO() {
  */
 void initialize() {
 
-	driveEncoderLeft = encoderInit(1,2,false);
-	driveEncoderRight = encoderInit(3,4,false);
-	driveEncoderBack = encoderInit(5,6,false);
-	shooterEncoder = encoderInit(7,8,false);
+//	driveEncoderLeft = encoderInit(1,2,false);
+//	driveEncoderRight = encoderInit(3,4,false);
+//	driveEncoderBack = encoderInit(5,6,false);
+	shooterEncoder = encoderInit(1,2,false); //Should be 7, 8
 	gyro = gyroInit(1,0);
 
 }
