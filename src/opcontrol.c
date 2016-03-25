@@ -267,13 +267,13 @@ void operatorControl() {
 	lastShooterSpeedLoopStopTime = millis();
 	while (1) {
 		taskCreate(updateShooterSpeedTask, TASK_DEFAULT_STACK_SIZE, NULL,
-				TASK_PRIORITY_HIGHEST);
+				TASK_PRIORITY_DEFAULT);
 		taskCreate(updateDriveTask, TASK_DEFAULT_STACK_SIZE, NULL,
 				TASK_PRIORITY_DEFAULT);
 		taskCreate(updateIntakeTask, TASK_DEFAULT_STACK_SIZE, NULL,
 				TASK_PRIORITY_DEFAULT);
 		taskCreate(updateShooterTask, TASK_DEFAULT_STACK_SIZE, NULL,
-				TASK_PRIORITY_HIGHEST - 1);
+				TASK_PRIORITY_DEFAULT);
 		delay(5);
 	}
 }
