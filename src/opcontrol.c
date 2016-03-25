@@ -156,6 +156,7 @@ void updateShooterSpeedTask(void *ignore) {
 	float encoderTicks = encoderGet(shooterEncoder);
 	shooterSpeed = ((encoderTicks / 360.0) / (1 / (SHOOTER_ENCODER_POLL_RATE) * 60));
 	encoderReset(shooterEncoder);
+	printf("Shooter speed: %f \n", shooterSpeed);
 	taskDelayUntil(&lastShooterSpeedLoopStopTime,
 			(1 / SHOOTER_ENCODER_POLL_RATE) * 1000);
 }
@@ -244,11 +245,6 @@ void updateShooterTask(void *ignore) {
 	taskDelay(10);
 }
 
-void debuggingTask(void *ignore) {
-	printf(" %f \n", shooterSpeed);
-	taskDelay(100);
-}
-
 /*
  * Runs the user operator control code. This function will be started in its own task with the
  * default priority and stack size whenever the robot is enabled via the Field Management System
@@ -269,25 +265,15 @@ void debuggingTask(void *ignore) {
 
 void operatorControl() {
 	lastShooterSpeedLoopStopTime = millis();
-	taskCreate(updateShooterSpeedTask, TASK_DEFAULT_STACK_SIZE, NULL,
-					TASK_PRIORITY_HIGHEST);
-			taskCreate(updateDriveTask, TASK_DEFAULT_STACK_SIZE, NULL,
-					TASK_PRIORITY_DEFAULT);
-			taskCreate(updateIntakeTask, TASK_DEFAULT_STACK_SIZE, NULL,
-					TASK_PRIORITY_DEFAULT);
-			taskCreate(updateShooterTask, TASK_DEFAULT_STACK_SIZE, NULL,
-					TASK_PRIORITY_HIGHEST - 1);
-			taskCreate(debuggingTask, TASK_DEFAULT_STACK_SIZE, NULL, TASK_PRIORITY_DEFAULT);
 	while (1) {
-//		taskCreate(updateShooterSpeedTask, TASK_DEFAULT_STACK_SIZE, NULL,
-//				TASK_PRIORITY_HIGHEST);
-//		taskCreate(updateDriveTask, TASK_DEFAULT_STACK_SIZE, NULL,
-//				TASK_PRIORITY_DEFAULT);
-//		taskCreate(updateIntakeTask, TASK_DEFAULT_STACK_SIZE, NULL,
-//				TASK_PRIORITY_DEFAULT);
-//		taskCreate(updateShooterTask, TASK_DEFAULT_STACK_SIZE, NULL,
-//				TASK_PRIORITY_HIGHEST - 1);
-//		taskCreate(debuggingTask, TASK_DEFAULT_STACK_SIZE, NULL, TASK_PRIORITY_DEFAULT);
-//		delay(5);
+		taskCreate(updateShooterSpeedTask, TASK_DEFAULT_STACK_SIZE, NULL,
+				TASK_PRIORITY_HIGHEST);
+		taskCreate(updateDriveTask, TASK_DEFAULT_STACK_SIZE, NULL,
+				TASK_PRIORITY_DEFAULT);
+		taskCreate(updateIntakeTask, TASK_DEFAULT_STACK_SIZE, NULL,
+				TASK_PRIORITY_DEFAULT);
+		taskCreate(updateShooterTask, TASK_DEFAULT_STACK_SIZE, NULL,
+				TASK_PRIORITY_HIGHEST - 1);
+		delay(5);
 	}
 }
