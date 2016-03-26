@@ -153,7 +153,7 @@ float pidController(float Kp, float Ki, float Kd, float setpoint,
  */
 void updateShooterSpeedTask(void *ignore) {
 	int encoderTicks = encoderGet(shooterEncoder);
-	shooterSpeed = ((encoderTicks / (360.0*4)) / 0.01);
+	shooterSpeed = ((encoderTicks / (360.0*4)) / (0.01*60));
 	encoderReset(shooterEncoder);
 	printf("Encoder ticks: %d\n\r", encoderTicks);
 	printf("Shooter speed: %f\n\r", shooterSpeed);
@@ -266,13 +266,13 @@ void operatorControl() {
 	lastShooterSpeedLoopStopTime = millis();
 	while (1) {
 		taskCreate(updateShooterSpeedTask, TASK_DEFAULT_STACK_SIZE, NULL,
-				TASK_PRIORITY_DEFAULT);
+				TASK_PRIORITY_HIGHEST);
 		taskCreate(updateDriveTask, TASK_DEFAULT_STACK_SIZE, NULL,
 				TASK_PRIORITY_DEFAULT);
 		taskCreate(updateIntakeTask, TASK_DEFAULT_STACK_SIZE, NULL,
 				TASK_PRIORITY_DEFAULT);
 		taskCreate(updateShooterTask, TASK_DEFAULT_STACK_SIZE, NULL,
-				TASK_PRIORITY_DEFAULT);
+				TASK_PRIORITY_HIGHEST+1);
 		delay(5);
 	}
 }
