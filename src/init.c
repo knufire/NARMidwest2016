@@ -65,11 +65,9 @@ void initializeIO() {
  * can be implemented in this task if desired.
  */
 void initialize() {
-
-//	driveEncoderLeft = encoderInit(1,2,false);
-//	driveEncoderRight = encoderInit(3,4,false);
-//	driveEncoderBack = encoderInit(5,6,false);
-	shooterEncoder = encoderInit(1,2,false); //Should be 7, 8
-	gyro = gyroInit(1,0);
-
+	driveEncoderLeft = encoderInit(1, 2, false);
+	driveEncoderRight = encoderInit(7, 8, false);
+	driveEncoderBack = encoderInit(5, 6, false);
+	shooterEncoder = encoderInit(3, 4, false);
+	gyro = gyroInit(1, 0);
 }

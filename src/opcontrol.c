@@ -153,7 +153,7 @@ float pidController(float Kp, float Ki, float Kd, float setpoint,
  */
 void updateShooterSpeedTask() {
 	int encoderTicks = encoderGet(shooterEncoder);
-	shooterSpeed = ((encoderTicks / (360.0*4)) / (0.01*60));
+	shooterSpeed = ((encoderTicks / (360.0 * 4)) / (0.01 / 60));
 	encoderReset(shooterEncoder);
 	printf("Shooter speed: %f\n\r", shooterSpeed);
 }
@@ -170,7 +170,7 @@ void updateDriveTask(void *ignore) {
 	float rotation = joystickGetAnalog(1, 2) / 127;
 
 	//All the constants are based on drive geometry.
-	float mult = (127-fabs( joystickGetAnalog(1, 2) /2 )) / 127;
+	float mult = (127 - fabs(joystickGetAnalog(1, 2) / 2)) / 127;
 	float wheel1 = (.160458 * transX + 0.57735 * transY) * mult + rotation;
 	float wheel2 = (.160458 * transX - 0.57735 * transY) * mult + rotation;
 	float wheel3 = 0.83954 * transX * mult - rotation;
@@ -179,9 +179,9 @@ void updateDriveTask(void *ignore) {
 	wheel2 = limit(wheel2, -1, 1);
 	wheel3 = limit(wheel3, -1, 1);
 
-	motorSet(MOTOR_PORT_DRIVE_LEFT, wheel1*127);
-	motorSet(MOTOR_PORT_DRIVE_RIGHT, wheel2*127);
-	motorSet(MOTOR_PORT_DRIVE_BACK, wheel3*127);
+	motorSet(MOTOR_PORT_DRIVE_LEFT, wheel1 * 127);
+	motorSet(MOTOR_PORT_DRIVE_RIGHT, wheel2 * 127);
+	motorSet(MOTOR_PORT_DRIVE_BACK, wheel3 * 127);
 
 	taskDelay(20);
 }
@@ -222,7 +222,6 @@ void updateShooterTask(void *ignore) {
 	//Scale output to current battery voltage to ensure constant voltage sent to shooter
 	float shooterPower = 5800.0 / ((float) powerLevelMain());
 	printf("Shooter power: %f\n\r", shooterPower);
-
 
 	//TODO: Integrate bang-bang controller for flywheel speed.
 
@@ -267,11 +266,11 @@ void operatorControl() {
 	taskRunLoop(updateShooterSpeedTask, 10);
 	while (1) {
 		taskCreate(updateDriveTask, TASK_DEFAULT_STACK_SIZE, NULL,
-				TASK_PRIORITY_DEFAULT);
+		TASK_PRIORITY_DEFAULT);
 		taskCreate(updateIntakeTask, TASK_DEFAULT_STACK_SIZE, NULL,
-				TASK_PRIORITY_DEFAULT);
+		TASK_PRIORITY_DEFAULT);
 		taskCreate(updateShooterTask, TASK_DEFAULT_STACK_SIZE, NULL,
-				TASK_PRIORITY_DEFAULT);
+		TASK_PRIORITY_DEFAULT);
 		delay(5);
 	}
 }
