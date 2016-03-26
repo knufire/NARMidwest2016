@@ -151,15 +151,11 @@ float pidController(float Kp, float Ki, float Kd, float setpoint,
  * precisely every 10ms; much more precisely than the general teleop loop. The even dt is
  * critical to make sure that the derivative doesn't add too much noise.
  */
-void updateShooterSpeedTask(void *ignore) {
+void updateShooterSpeedTask() {
 	int encoderTicks = encoderGet(shooterEncoder);
 	shooterSpeed = ((encoderTicks / (360.0*4)) / (0.01*60));
 	encoderReset(shooterEncoder);
 	printf("Shooter speed: %f\n\r", shooterSpeed);
-	if (lastShooterSpeedLoopStopTime == -1) {
-		lastShooterSpeedLoopStopTime = millis();
-	}
-	taskDelayUntil(&lastShooterSpeedLoopStopTime,10);
 }
 
 /*---------------------------------------------------
@@ -267,9 +263,8 @@ void updateShooterTask(void *ignore) {
  */
 
 void operatorControl() {
+	taskRunLoop(updateShooterSpeedTask, 10);
 	while (1) {
-		taskCreate(updateShooterSpeedTask, TASK_DEFAULT_STACK_SIZE, NULL,
-				TASK_PRIORITY_DEFAULT);
 		taskCreate(updateDriveTask, TASK_DEFAULT_STACK_SIZE, NULL,
 				TASK_PRIORITY_DEFAULT);
 		taskCreate(updateIntakeTask, TASK_DEFAULT_STACK_SIZE, NULL,
