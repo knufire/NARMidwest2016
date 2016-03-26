@@ -272,7 +272,7 @@ void operatorControl() {
 		taskCreate(updateIntakeTask, TASK_DEFAULT_STACK_SIZE, NULL,
 				TASK_PRIORITY_DEFAULT);
 		taskCreate(updateShooterTask, TASK_DEFAULT_STACK_SIZE, NULL,
-				TASK_PRIORITY_HIGHEST+1);
+				TASK_PRIORITY_HIGHEST-1);
 		delay(5);
 	}
 }
