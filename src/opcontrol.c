@@ -12,7 +12,6 @@
 #define SHOOTER_SPEED_SHORT			1000	// Shooter RPM for close shot
 #define SHOOTER_SPEED_MID			1500	// Shooter RPM for mid shot
 #define SHOOTER_SPEED_LONG			2800	// Shooter RPM for far/fullcourt shot
-#define SHOOTER_ENCODER_POLL_RATE 	100		// Rate in hz to poll shooter encoder
 #define MOTOR_PORT_DRIVE_LEFT		8
 #define MOTOR_PORT_DRIVE_RIGHT		3
 #define MOTOR_PORT_DRIVE_BACK		2
@@ -153,13 +152,12 @@ float pidController(float Kp, float Ki, float Kd, float setpoint,
  * critical to make sure that the derivative doesn't add too much noise.
  */
 void updateShooterSpeedTask(void *ignore) {
-	float encoderTicks = encoderGet(shooterEncoder);
-	shooterSpeed = ((encoderTicks / (360.0*4)) / (1 / (SHOOTER_ENCODER_POLL_RATE) * 60));
+	int encoderTicks = encoderGet(shooterEncoder);
+	shooterSpeed = ((encoderTicks / (360.0*4)) / 0.01);
 	encoderReset(shooterEncoder);
 	printf("Encoder ticks: %d\n\r", encoderTicks);
-	printf("Shooter speed: %d\n\r", shooterSpeed);
-	taskDelayUntil(&lastShooterSpeedLoopStopTime,
-			(1 / SHOOTER_ENCODER_POLL_RATE) * 1000);
+	printf("Shooter speed: %f\n\r", shooterSpeed);
+	taskDelayUntil(&lastShooterSpeedLoopStopTime,10);
 }
 
 /*---------------------------------------------------
