@@ -31,7 +31,7 @@ int conveyorFlag = 0;
 int intakeFlag = 0;
 int shooterFlag = 0;
 float shooterSpeed = 0;
-unsigned long lastShooterSpeedLoopStopTime;
+unsigned long lastShooterSpeedLoopStopTime = -1;
 
 //Storage for rising edge of buttons
 bool intakeInLastVal = false;
@@ -155,8 +155,10 @@ void updateShooterSpeedTask(void *ignore) {
 	int encoderTicks = encoderGet(shooterEncoder);
 	shooterSpeed = ((encoderTicks / (360.0*4)) / (0.01*60));
 	encoderReset(shooterEncoder);
-	printf("Encoder ticks: %d\n\r", encoderTicks);
 	printf("Shooter speed: %f\n\r", shooterSpeed);
+	if (lastShooterSpeedLoopStopTime == -1) {
+		lastShooterSpeedLoopStopTime = millis();
+	}
 	taskDelayUntil(&lastShooterSpeedLoopStopTime,10);
 }
 
@@ -184,6 +186,7 @@ void updateDriveTask(void *ignore) {
 	motorSet(MOTOR_PORT_DRIVE_LEFT, wheel1*127);
 	motorSet(MOTOR_PORT_DRIVE_RIGHT, wheel2*127);
 	motorSet(MOTOR_PORT_DRIVE_BACK, wheel3*127);
+	printf("Drive task running./n/r");
 	taskDelay(20);
 }
 
@@ -212,6 +215,7 @@ void updateIntakeTask(void *ignore) {
 	intakeOutLastVal = intakeOut;
 	conveyorInLastVal = conveyorIn;
 	conveyorOutLastVal = conveyorOut;
+	printf("Intake task running./n/r");
 	taskDelay(20);
 }
 
@@ -263,16 +267,15 @@ void updateShooterTask(void *ignore) {
  */
 
 void operatorControl() {
-	lastShooterSpeedLoopStopTime = millis();
 	while (1) {
 		taskCreate(updateShooterSpeedTask, TASK_DEFAULT_STACK_SIZE, NULL,
-				TASK_PRIORITY_HIGHEST);
+				TASK_PRIORITY_DEFAULT);
 		taskCreate(updateDriveTask, TASK_DEFAULT_STACK_SIZE, NULL,
 				TASK_PRIORITY_DEFAULT);
 		taskCreate(updateIntakeTask, TASK_DEFAULT_STACK_SIZE, NULL,
 				TASK_PRIORITY_DEFAULT);
 		taskCreate(updateShooterTask, TASK_DEFAULT_STACK_SIZE, NULL,
-				TASK_PRIORITY_HIGHEST-1);
+				TASK_PRIORITY_DEFAULT);
 		delay(5);
 	}
 }
