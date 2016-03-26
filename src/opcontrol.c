@@ -154,9 +154,9 @@ float pidController(float Kp, float Ki, float Kd, float setpoint,
  */
 void updateShooterSpeedTask(void *ignore) {
 	int encoderTicks = encoderGet(shooterEncoder);
-	//shooterSpeed = ((encoderTicks / 360.0) / (1 / (SHOOTER_ENCODER_POLL_RATE) * 60));
-	//encoderReset(shooterEncoder);
-	printf("Shooter speed: %d \n", encoderTicks);
+	shooterSpeed = ((encoderTicks / (360.0*4)) / (1 / (SHOOTER_ENCODER_POLL_RATE) * 60));
+	encoderReset(shooterEncoder);
+	printf("Shooter speed: %d \n", shooterSpeed);
 	taskDelayUntil(&lastShooterSpeedLoopStopTime,
 			(1 / SHOOTER_ENCODER_POLL_RATE) * 1000);
 }
