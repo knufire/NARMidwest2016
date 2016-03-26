@@ -182,7 +182,7 @@ void updateDriveTask(void *ignore) {
 	motorSet(MOTOR_PORT_DRIVE_LEFT, wheel1*127);
 	motorSet(MOTOR_PORT_DRIVE_RIGHT, wheel2*127);
 	motorSet(MOTOR_PORT_DRIVE_BACK, wheel3*127);
-	printf("Drive task running./n/r");
+
 	taskDelay(20);
 }
 
@@ -211,7 +211,6 @@ void updateIntakeTask(void *ignore) {
 	intakeOutLastVal = intakeOut;
 	conveyorInLastVal = conveyorIn;
 	conveyorOutLastVal = conveyorOut;
-	printf("Intake task running./n/r");
 	taskDelay(20);
 }
 
@@ -222,6 +221,8 @@ void updateShooterTask(void *ignore) {
 
 	//Scale output to current battery voltage to ensure constant voltage sent to shooter
 	float shooterPower = 5800.0 / ((float) powerLevelMain());
+	printf("Shooter power: %f\n\r", shooterPower);
+
 
 	//TODO: Integrate bang-bang controller for flywheel speed.
 
