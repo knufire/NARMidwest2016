@@ -153,10 +153,11 @@ float pidController(float Kp, float Ki, float Kd, float setpoint,
  * critical to make sure that the derivative doesn't add too much noise.
  */
 void updateShooterSpeedTask(void *ignore) {
-	int encoderTicks = encoderGet(shooterEncoder);
+	float encoderTicks = encoderGet(shooterEncoder);
 	shooterSpeed = ((encoderTicks / (360.0*4)) / (1 / (SHOOTER_ENCODER_POLL_RATE) * 60));
 	encoderReset(shooterEncoder);
-	printf("Shooter speed: %d \n", shooterSpeed);
+	printf("Encoder ticks: %d\n\r", encoderTicks);
+	printf("Shooter speed: %d\n\r", shooterSpeed);
 	taskDelayUntil(&lastShooterSpeedLoopStopTime,
 			(1 / SHOOTER_ENCODER_POLL_RATE) * 1000);
 }
