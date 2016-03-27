@@ -4,6 +4,9 @@
 #include "../include/API.h"
 #include "../include/main.h"
 #include "../include/math.h"
+#include "../include/utils.h"
+#include "drive.h"
+#include "Gyro.h"
 
 /*---------------------------------------------------
  * 					 CONSTANTS						|
@@ -12,9 +15,6 @@
 #define SHOOTER_SPEED_SHORT			1000	// Shooter RPM for close shot
 #define SHOOTER_SPEED_MID			1500	// Shooter RPM for mid shot
 #define SHOOTER_SPEED_LONG			2800	// Shooter RPM for far/fullcourt shot
-#define MOTOR_PORT_DRIVE_LEFT		8
-#define MOTOR_PORT_DRIVE_RIGHT		3
-#define MOTOR_PORT_DRIVE_BACK		2
 #define MOTOR_PORT_INTAKE			9
 #define MOTOR_PORT_CONVEYOR_FWD		1
 #define MOTOR_PORT_CONVEYOR_REV		10
@@ -31,7 +31,6 @@ int conveyorFlag = 0;
 int intakeFlag = 0;
 int shooterFlag = 0;
 float shooterSpeed = 0;
-unsigned long lastShooterSpeedLoopStopTime = -1;
 
 //Storage for rising edge of buttons
 bool intakeInLastVal = false;
@@ -40,106 +39,6 @@ bool conveyorInLastVal = false;
 bool conveyorOutLastVal = false;
 bool shooterOnLastVal = false;
 bool shooterOffLastVal = false;
-
-/*------------------------------------------------------
- * 				  Utility Functions					   |
- *------------------------------------------------------
- */
-
-/**
- * Coerces the value between the minimum and the maximum. If the value is outside either limit,
- * it will be set to that limit
- *
- * @param value The value to coerce
- * @param min The minimum of the value's range
- * @param max The maximum of the values range
- * @return value The coerced value
- */
-float limit(float value, float min, float max) {
-	if (value < min) {
-		return min;
-	} else if (value > max) {
-		return max;
-	}
-	return value;
-}
-
-/**
- * A flag that acts like a 3 position toggle swtich. The high input will set the flag to +1,
- * and the low input will set the flag to -1. If the input is triggered when the flag is
- * already set to the input's respective state, the flag will shut off.
- *
- * @param highInput The boolean to toggle between forward and off
- * @param lowInput The boolean to toggle between backwards and off
- * @return flag	The value of the flag.
- */
-
-int latchFlag(bool highInput, bool lowInput, int flag) {
-	if (highInput) {
-		if (flag == 1) {
-			return 0;
-		} else {
-			return 1;
-		}
-	} else if (lowInput) {
-		if (flag == -1) {
-			return 0;
-		} else {
-			return -1;
-		}
-	} else {
-		return flag;
-	}
-}
-
-/**
- * A standard bang-bang controller. Full power forward if the process variable is above the
- * setpoint, off if the variable is below the setpoint, and half power if the variable and
- * setpoint are equal.
- *
- * @param setpoint The goal operating point
- * @param var The process variable
- */
-
-float bangBangController(int setpoint, int var) {
-	if (var > setpoint) {
-		return 1.0;
-	} else if (var < setpoint) {
-		return 0;
-	} else {
-		return 0.5;
-	}
-}
-
-/**
- * A standard PID controller.
- *
- * @param Kp Proportional gain
- * @param Ki Integral gain
- * @param Kd Derivative gain
- * @param setpoint Goal operating state of the mechanism
- * @param processVar Sensor value measuring what you're trying to control
- * @return output Motor power between -1 and 1
- */
-
-float errorSum = 0;
-float lastErr = 0;
-float pidController(float Kp, float Ki, float Kd, float setpoint,
-		float processVar) {
-	float error = setpoint - processVar;
-
-	float p = Kp * error;
-	float i = Ki * errorSum;
-	float d = Kd * error - lastErr;
-
-	lastErr = error;
-	errorSum += error;
-
-	float output = p + i + d;
-	output = limit(output, -1, 1);
-
-	return output;
-}
 
 /*-----------------------------------------------------
  * 		   			Background Tasks				  |
@@ -169,20 +68,16 @@ void updateDriveTask(void *ignore) {
 	float transY = joystickGetAnalog(1, 3) / 127;
 	float rotation = joystickGetAnalog(1, 2) / 127;
 
-	//All the constants are based on drive geometry.
-	float mult = (127 - fabs(joystickGetAnalog(1, 2) / 2)) / 127;
-	float wheel1 = (.160458 * transX + 0.57735 * transY) * mult + rotation;
-	float wheel2 = (.160458 * transX - 0.57735 * transY) * mult + rotation;
-	float wheel3 = 0.83954 * transX * mult - rotation;
-
-	wheel1 = limit(wheel1, -1, 1);
-	wheel2 = limit(wheel2, -1, 1);
-	wheel3 = limit(wheel3, -1, 1);
-
-	motorSet(MOTOR_PORT_DRIVE_LEFT, wheel1 * 127);
-	motorSet(MOTOR_PORT_DRIVE_RIGHT, wheel2 * 127);
-	motorSet(MOTOR_PORT_DRIVE_BACK, wheel3 * 127);
-
+	if ((fabs(transX) > 10) || (fabs(transY) > 10) || (fabs(rotation) > 10)) {
+		if ((fabs(rotation)) < 10) {
+			driveVector(transX, transY, JoyGyroTurn());
+		} else {
+			driveVector(transX, transY, rotation);
+			SetHeading();
+		}
+	} else {
+		driveVector(0, 0, 0);
+	}
 	taskDelay(20);
 }
 
@@ -264,6 +159,7 @@ void updateShooterTask(void *ignore) {
 
 void operatorControl() {
 	taskRunLoop(updateShooterSpeedTask, 10);
+	taskRunLoop(RefreshGyro,20);
 	while (1) {
 		taskCreate(updateDriveTask, TASK_DEFAULT_STACK_SIZE, NULL,
 		TASK_PRIORITY_DEFAULT);
