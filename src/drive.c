@@ -14,23 +14,46 @@
 #define MOTOR_PORT_DRIVE_LEFT		8
 #define MOTOR_PORT_DRIVE_RIGHT		3
 #define MOTOR_PORT_DRIVE_BACK		2
+#define RAD_CONVERSION 				M_PI / 180
+#define TURNING_SPEED				1
 
-void driveVector(float transX, float transY, float rotation) {
-	float wheelLeft = (.160458 * transX) + (0.57735 * transY)
+Vector leftWheelVector = fromAngle(30 * RAD_CONVERSION);
+Vector rightWheelVector = fromAngle(150 * RAD_CONVERSION);
+Vector backWheelVector = fromAngle(270 * RAD_CONVERSION);
+
+void driveDirection(float transX, float transY, float rotation) {
+	float leftWheelPower = (.160458 * transX) + (0.57735 * transY)
 			+ (0.42 * rotation);
-	float wheelRight = (.160458 * transX) - (0.57735 * transY)
+	float rightWheelPower = (.160458 * transX) - (0.57735 * transY)
 			+ (0.42 * rotation);
-	float wheelBack = 0.83954 * transX - (0.42 * rotation);
+	float backWheelPower = 0.83954 * transX - (0.42 * rotation);
 
-	wheelLeft = limit(wheelLeft, -1, 1);
-	wheelRight = limit(wheelRight, -1, 1);
-	wheelBack = limit(wheelBack, -1, 1);
+	leftWheelPower = limit(leftWheelPower, -1, 1);
+	rightWheelPower = limit(rightWheelPower, -1, 1);
+	backWheelPower = limit(backWheelPower, -1, 1);
 
-	wheelLeft *= 127;
-	wheelRight *= 127;
-	wheelBack *= 127;
+	leftWheelPower *= 127;
+	rightWheelPower *= 127;
+	backWheelPower *= 127;
 
-	driveMotor(wheelLeft, wheelRight, wheelBack);
+	driveMotor(leftWheelPower, rightWheelPower, backWheelPower);
+}
+
+void driveVector(Vector vec, float rot) {
+	float leftWheelPower = scalarProjection(vec, leftWheelVector) + rot * TURNING_SPEED;
+	float rightWheelPower = scalarProjection(vec, rightWheelVector) + rot * TURNING_SPEED;
+	float backWheelPower = scalarProjection(vec, backWheelVector) + rot * TURNING_SPEED;
+
+	leftWheelPower = limit(leftWheelPower, -1, 1);
+	rightWheelPower = limit(rightWheelPower, -1, 1);
+	backWheelPower = limit(backWheelPower, -1, 1);
+
+	leftWheelPower *= 127;
+	rightWheelPower *= 127;
+	backWheelPower *= 127;
+
+	driveMotor(leftWheelPower, rightWheelPower, backWheelPower);
+
 }
 
 void driveMotor(int wheelLeft, int wheelRight, int wheelBack) {

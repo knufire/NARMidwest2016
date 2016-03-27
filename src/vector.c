@@ -1,6 +1,9 @@
 /*
  * vector.c
  *
+ * 	Basic vector library. Ported from FRC1114's 2015 code.
+ * 	Original (Java) author: Jason
+ *
  *  Created on: Mar 26, 2016
  *      Author: Rahul
  */

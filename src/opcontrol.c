@@ -7,6 +7,7 @@
 #include "../include/utils.h"
 #include "drive.h"
 #include "Gyro.h"
+#include "vector.h"
 
 /*---------------------------------------------------
  * 					 CONSTANTS						|
@@ -64,19 +65,21 @@ void updateShooterSpeedTask() {
 
 void updateDriveTask(void *ignore) {
 	//Grab Joystick Values
-	float transX = joystickGetAnalog(1, 4) / 127;
-	float transY = joystickGetAnalog(1, 3) / 127;
+	Vector vec;
+	vec.x = joystickGetAnalog(1, 4) / 127;
+	vec.y = joystickGetAnalog(1, 3) / 127;
 	float rotation = joystickGetAnalog(1, 2) / 127;
 
-	if ((fabs(transX) > 10) || (fabs(transY) > 10) || (fabs(rotation) > 10)) {
-		if ((fabs(rotation)) < 10) {
-			driveVector(transX, transY, JoyGyroTurn());
+	if ((magnitude(vec) > 0.05) || (fabs(rotation) > 0.05)) {
+		if (((fabs(rotation)) < 0.05) && false) {
+			//TODO: Uncomment line and take out false above once gyro works
+			//driveVector(transX, transY, JoyGyroTurn());
 		} else {
-			driveVector(transX, transY, rotation);
+			driveVector(vec, rotation);
 			SetHeading();
 		}
 	} else {
-		driveVector(0, 0, 0);
+		driveDirection(0, 0, 0);
 	}
 	taskDelay(20);
 }
