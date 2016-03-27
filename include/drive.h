@@ -8,7 +8,10 @@
 #ifndef INCLUDE_DRIVE_H_
 #define INCLUDE_DRIVE_H_
 
-void driveVector(float transX, float transY, float rotation);
+#include "vector.h"
+
+void driveDirection(float transX, float transY, float rotation);
+void driveVector(Vector vec, float rotation);
 void driveMotor(int wheelLeft, int wheelRight, int wheelBack);
 
 

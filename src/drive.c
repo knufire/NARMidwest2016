@@ -8,7 +8,7 @@
 #include "main.h"
 #include "math.h"
 #include "drive.h"
-
+#include "vector.h"
 #include "../include/utils.h"
 
 #define MOTOR_PORT_DRIVE_LEFT		8
@@ -16,10 +16,6 @@
 #define MOTOR_PORT_DRIVE_BACK		2
 #define RAD_CONVERSION 				M_PI / 180
 #define TURNING_SPEED				1
-
-Vector leftWheelVector = fromAngle(30 * RAD_CONVERSION);
-Vector rightWheelVector = fromAngle(150 * RAD_CONVERSION);
-Vector backWheelVector = fromAngle(270 * RAD_CONVERSION);
 
 void driveDirection(float transX, float transY, float rotation) {
 	float leftWheelPower = (.160458 * transX) + (0.57735 * transY)
@@ -40,6 +36,11 @@ void driveDirection(float transX, float transY, float rotation) {
 }
 
 void driveVector(Vector vec, float rot) {
+
+	Vector leftWheelVector = fromAngle(30 * RAD_CONVERSION);
+	Vector rightWheelVector = fromAngle(150 * RAD_CONVERSION);
+	Vector backWheelVector = fromAngle(270 * RAD_CONVERSION);
+
 	float leftWheelPower = scalarProjection(vec, leftWheelVector) + rot * TURNING_SPEED;
 	float rightWheelPower = scalarProjection(vec, rightWheelVector) + rot * TURNING_SPEED;
 	float backWheelPower = scalarProjection(vec, backWheelVector) + rot * TURNING_SPEED;
