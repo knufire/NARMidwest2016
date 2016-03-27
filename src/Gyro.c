@@ -82,5 +82,6 @@ void SetHeading() {
 void RefreshGyro() {
 	CurrentHeading = GyroCorrect(gyroGet(gyro));
 	GetOffset();
+	printf("Heading: %d\n\r",CurrentHeading);
 }
 
