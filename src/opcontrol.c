@@ -69,7 +69,6 @@ void updateDriveTask(void *ignore) {
 	vec.x = joystickGetAnalog(1, 4) / 127;
 	vec.y = joystickGetAnalog(1, 3) / 127;
 	float rotation = joystickGetAnalog(1, 2) / 127;
-
 	driveVector(vec, rotation);
 	taskDelay(20);
 }
@@ -152,7 +151,7 @@ void updateShooterTask(void *ignore) {
 
 void operatorControl() {
 	taskRunLoop(updateShooterSpeedTask, 10);
-	taskRunLoop(RefreshGyro,20);
+	taskRunLoop(RefreshGyro, 20);
 	while (1) {
 		taskCreate(updateDriveTask, TASK_DEFAULT_STACK_SIZE, NULL,
 		TASK_PRIORITY_DEFAULT);

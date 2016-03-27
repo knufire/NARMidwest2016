@@ -95,8 +95,8 @@ float pidController(float Kp, float Ki, float Kd, float dt, float setpoint,
 	float error = setpoint - processVar;
 
 	float p = Kp * error;
-	float i = Ki * errorSum * dt/1000;
-	float d = Kd * (error - lastErr) * dt/1000;
+	float i = Ki * errorSum * dt / 1000;
+	float d = Kd * (error - lastErr) * dt / 1000;
 
 	lastErr = error;
 	errorSum += error;

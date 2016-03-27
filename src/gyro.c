@@ -18,17 +18,18 @@ int currentHeading;
 float gyroCorrection;
 
 void gyroCorrectionPID() {
-	 float kp = 5/127;
-	 float ki = 0;
-	 float kd = 20/127;
+	float kp = 5 / 127;
+	float ki = 0;
+	float kd = 20 / 127;
 
-	 float output = pidController(kp, ki, kd, 10, currentHeading, desiredHeading);
+	float output = pidController(kp, ki, kd, 10, currentHeading,
+			desiredHeading);
 
-	 if (fabs(output) < 0.1) {
-		 output = 0;
-	 }
+	if (fabs(output) < 0.1) {
+		output = 0;
+	}
 
-	 gyroCorrection = output;
+	gyroCorrection = output;
 }
 
 int correctGyroAngle(int x) {

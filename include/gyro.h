@@ -10,7 +10,7 @@
 
 void gyroCorrectionPID();
 
-int correctGyroAngle (int x);
+int correctGyroAngle(int x);
 
 int getHeadingError();
 

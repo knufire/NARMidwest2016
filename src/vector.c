@@ -26,7 +26,7 @@ Vector subtract(Vector vec1, Vector vec2) {
 }
 
 float magnitude(Vector vec) {
-	return sqrt(powf(vec.x,2) + powf(vec.y,2));
+	return sqrt(powf(vec.x, 2) + powf(vec.y, 2));
 }
 
 float dotProduct(Vector vec1, Vector vec2) {
@@ -47,7 +47,7 @@ Vector fromAngle(float c) {
 	return result;
 }
 
-Vector unit (Vector vec) {
+Vector unit(Vector vec) {
 	float mag = magnitude(vec);
 	Vector result;
 	result.x = vec.x / mag;
@@ -60,10 +60,11 @@ float scalarProjection(Vector vec1, Vector vec2) {
 }
 
 Vector projection(Vector vec1, Vector vec2) {
-	return scalarProduct(vec2, (dotProduct(vec1, vec2) / dotProduct(vec2, vec2)));
+	return scalarProduct(vec2,
+			(dotProduct(vec1, vec2) / dotProduct(vec2, vec2)));
 }
 
-Vector rotate (Vector vec, float angle) {
+Vector rotate(Vector vec, float angle) {
 	Vector result;
 	result.x = vec.x * cos(angle) - vec.y * sin(angle);
 	result.y = vec.x * sin(angle) - vec.y * cos(angle);

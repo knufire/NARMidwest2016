@@ -42,9 +42,12 @@ void driveDirection(float transX, float transY, float rotation) {
 
 void driveVector(Vector translate, float rotation) {
 
-	float leftWheelPower = scalarProjection(translate, leftWheelVector) + rotation * TURNING_SPEED;
-	float rightWheelPower = scalarProjection(translate, rightWheelVector) + rotation * TURNING_SPEED;
-	float backWheelPower = scalarProjection(translate, backWheelVector) + rotation * TURNING_SPEED;
+	float leftWheelPower = scalarProjection(translate,
+			leftWheelVector) + rotation * TURNING_SPEED;
+	float rightWheelPower = scalarProjection(translate,
+			rightWheelVector) + rotation * TURNING_SPEED;
+	float backWheelPower = scalarProjection(translate,
+			backWheelVector) + rotation * TURNING_SPEED;
 
 	leftWheelPower = limit(leftWheelPower, -1, 1);
 	rightWheelPower = limit(rightWheelPower, -1, 1);
@@ -64,19 +67,26 @@ void driveGyro(Vector translate, float rotation) {
 		setDesiredHeading();
 	} else {
 		float gyroCorrection = getGyroCorrection();
-		float leftWheelPower = scalarProjection(translate, leftWheelVector) + rotation * TURNING_SPEED;
-		float rightWheelPower = scalarProjection(translate, rightWheelVector) + rotation * TURNING_SPEED;
-		float backWheelPower = scalarProjection(translate, backWheelVector) + rotation * TURNING_SPEED;
-		float maxOut = fmax(fmax(leftWheelPower, rightWheelPower),backWheelPower);
+		float leftWheelPower = scalarProjection(translate,
+				leftWheelVector) + rotation * TURNING_SPEED;
+		float rightWheelPower = scalarProjection(translate,
+				rightWheelVector) + rotation * TURNING_SPEED;
+		float backWheelPower = scalarProjection(translate,
+				backWheelVector) + rotation * TURNING_SPEED;
+		float maxOut = fmax(fmax(leftWheelPower, rightWheelPower),
+				backWheelPower);
 		float strafeMagnitude = magnitude(translate);
 		if (maxOut != 0) {
 			leftWheelPower /= maxOut;
 			rightWheelPower /= maxOut;
 			backWheelPower /= maxOut;
 		}
-		leftWheelPower = limit(leftWheelPower * strafeMagnitude + gyroCorrection, -1, 1);
-		rightWheelPower = limit(rightWheelPower * strafeMagnitude + gyroCorrection, -1, 1);
-		backWheelPower = limit(backWheelPower * strafeMagnitude + gyroCorrection, -1, 1);
+		leftWheelPower = limit(
+				leftWheelPower * strafeMagnitude + gyroCorrection, -1, 1);
+		rightWheelPower = limit(
+				rightWheelPower * strafeMagnitude + gyroCorrection, -1, 1);
+		backWheelPower = limit(
+				backWheelPower * strafeMagnitude + gyroCorrection, -1, 1);
 		driveMotor(leftWheelPower, rightWheelPower, backWheelPower);
 	}
 
