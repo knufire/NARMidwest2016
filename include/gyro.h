@@ -8,14 +8,16 @@
 #ifndef INCLUDE_GYRO_H_
 #define INCLUDE_GYRO_H_
 
-double JoyGyroTurn();
+void gyroCorrectionPID();
 
-int GyroCorrect(int x);
+int correctGyroAngle (int x);
 
-int GetOffset();
+int getHeadingError();
 
-void SetHeading();
+void setDesiredHeading();
 
 void RefreshGyro();
+
+float getGyroCorrection();
 
 #endif /* INCLUDE_GYRO_H_ */

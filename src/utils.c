@@ -90,13 +90,13 @@ float bangBangController(int setpoint, int var) {
 
 float errorSum = 0;
 float lastErr = 0;
-float pidController(float Kp, float Ki, float Kd, float setpoint,
+float pidController(float Kp, float Ki, float Kd, float dt, float setpoint,
 		float processVar) {
 	float error = setpoint - processVar;
 
 	float p = Kp * error;
-	float i = Ki * errorSum;
-	float d = Kd * error - lastErr;
+	float i = Ki * errorSum * dt/1000;
+	float d = Kd * (error - lastErr) * dt/1000;
 
 	lastErr = error;
 	errorSum += error;
@@ -105,5 +105,9 @@ float pidController(float Kp, float Ki, float Kd, float setpoint,
 	output = limit(output, -1, 1);
 
 	return output;
+}
+
+void resetIntegral() {
+	errorSum = 0;
 }
 

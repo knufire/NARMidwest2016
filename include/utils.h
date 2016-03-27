@@ -11,7 +11,8 @@
 float limit(float value, float min, float max);
 int latchFlag(bool highInput, bool lowInput, int flag);
 float bangBangController(int setpoint, int var);
-float pidController(float Kp, float Ki, float Kd, float setpoint,
+float pidController(float Kp, float Ki, float Kd, float dt, float setpoint,
 		float processVar);
+void resetIntegral();
 
 #endif /* INCLUDE_UTILS_H_ */
