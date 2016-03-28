@@ -20,7 +20,7 @@ void gyroCorrectionPID() {
 	float ki = 0;
 	float kd = 0;
 
-	float output = pidController(kp, ki, kd, 10, 0, headingError)
+	float output = pidController(kp, ki, kd, 10, 0, headingError);
 
 	gyroCorrection = output;
 }
