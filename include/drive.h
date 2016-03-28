@@ -12,6 +12,7 @@
 
 void driveDirection(float transX, float transY, float rotation);
 void driveVector(Vector vec, float rotation);
+void driveGyro(Vector translate, float rotation);
 void driveMotor(float leftWheelPower, float rightWheelPower, float backWheelPower);
 
 
