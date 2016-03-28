@@ -66,6 +66,6 @@ void RefreshGyro() {
 //	printf("Heading: %d\n\r", currentHeading);
 //	printf("Offset: %d\n\r", headingError);
 
-	printf( "%d/n/r",gyroGet(gyro));
+	printf( "%d\n\r",gyroGet(gyro));
 }
 
