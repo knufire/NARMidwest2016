@@ -60,12 +60,12 @@ float getGyroCorrection() {
 }
 
 void RefreshGyro() {
-//	currentHeading = correctGyroAngle(gyroGet(gyro));
-//	getHeadingError();
-//	gyroCorrectionPID();
-//	printf("Heading: %d\n\r", currentHeading);
-//	printf("Offset: %d\n\r", headingError);
+	currentHeading = correctGyroAngle(gyroGet(gyro));
+	getHeadingError();
+	gyroCorrectionPID();
+	printf("Heading: %d\n\r", currentHeading);
+	printf("Offset: %d\n\r", headingError);
+	printf("Correction: %f\n\r", gyroCorrection);
 
-	printf( "%d\n\r",gyroGet(gyro));
 }
 
