@@ -10,20 +10,10 @@
 #include "vector.h"
 #include "shooter.h"
 
-/*---------------------------------------------------
- * 					 CONSTANTS						|
- *---------------------------------------------------
- */
-
 #define MOTOR_PORT_INTAKE			9
 #define MOTOR_PORT_CONVEYOR_REV		1
 #define MOTOR_PORT_CONVEYOR_FWD		10
 
-
-/*----------------------------------------------------
- * 				Global Teleop Variables				 |
- *----------------------------------------------------
- */
 int conveyorFlag = 0;
 int intakeFlag = 0;
 
@@ -36,10 +26,6 @@ bool conveyorOutLastVal = false;
 bool shooterOnLastVal = false;
 bool shooterOffLastVal = false;
 
-/*---------------------------------------------------
- * 					Teleop Functions				|
- * --------------------------------------------------
- */
 
 void updateDriveTask(void *ignore) {
 	//Grab Joystick Values
@@ -127,7 +113,7 @@ void operatorControl() {
 		TASK_PRIORITY_DEFAULT);
 		taskCreate(updateIntakeTask, TASK_DEFAULT_STACK_SIZE, NULL,
 		TASK_PRIORITY_DEFAULT);
-		taskCreate(updateShooterTask, TASK_DEFAULT_STACK_SIZE, NULL,
+		taskCreate(updateShooterState, TASK_DEFAULT_STACK_SIZE, NULL,
 		TASK_PRIORITY_DEFAULT);
 		delay(5);
 	}
