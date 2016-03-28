@@ -23,10 +23,6 @@ void gyroCorrectionPID() {
 	float output = pidController(kp, ki, kd, 10, currentHeading,
 			desiredHeading);
 
-	if (fabs(output) < 0.1) {
-		output = 0;
-	}
-
 	gyroCorrection = output;
 }
 
@@ -53,6 +49,7 @@ int getHeadingError() {
 
 void setDesiredHeading() {
 	desiredHeading = correctGyroAngle(gyroGet(gyro));
+	headingError = 0;
 }
 
 float getGyroCorrection() {
