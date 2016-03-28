@@ -22,6 +22,14 @@ void gyroCorrectionPID() {
 
 	float output = pidController(kp, ki, kd, 10, 0, headingError);
 
+	if (output < .15) {
+		output += .15;
+	}
+	if (fabs(headingError) < 1) {
+		output = 0;
+	}
+
+
 	gyroCorrection = output;
 }
 
