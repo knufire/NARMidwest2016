@@ -10,8 +10,6 @@
 #include "../include/gyro.h"
 #include "utils.h"
 
-extern Gyro gyro;
-
 int headingError;
 int desiredHeading;
 int currentHeading;
