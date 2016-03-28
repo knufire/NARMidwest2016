@@ -21,6 +21,7 @@ Vector scalarProduct(Vector vec, float scalar);
 Vector fromAngle(float c);
 Vector unit(Vector vec);
 float scalarProjection(Vector vec1, Vector vec2);
+float magSq (Vector vec);
 Vector projection(Vector vec1, Vector vec2);
 Vector rotate(Vector vec, float angle);
 

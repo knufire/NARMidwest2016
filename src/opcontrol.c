@@ -30,10 +30,10 @@ bool shooterOffLastVal = false;
 void updateDriveTask(void *ignore) {
 	//Grab Joystick Values
 	Vector vec;
-	vec.x = joystickGetAnalog(1, 4) / 127;
-	vec.y = joystickGetAnalog(1, 3) / 127;
-	float rotation = joystickGetAnalog(1, 2) / 127;
-	driveVector(vec, rotation);
+	vec.x = joystickGetAnalog(1, 3) / 127.0;
+	vec.y = joystickGetAnalog(1, 4) / -127.0;
+	float rotation = joystickGetAnalog(1, 2) / 127.0;
+	driveGyro(vec, rotation);
 	taskDelay(20);
 }
 

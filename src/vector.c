@@ -26,7 +26,7 @@ Vector subtract(Vector vec1, Vector vec2) {
 }
 
 float magnitude(Vector vec) {
-	return sqrt(powf(vec.x, 2) + powf(vec.y, 2));
+	return sqrt(magSq(vec));
 }
 
 float dotProduct(Vector vec1, Vector vec2) {
@@ -53,6 +53,10 @@ Vector unit(Vector vec) {
 	result.x = vec.x / mag;
 	result.y = vec.y / mag;
 	return result;
+}
+
+float magSq (Vector vec) {
+	return dotProduct(vec, vec);
 }
 
 float scalarProjection(Vector vec1, Vector vec2) {
