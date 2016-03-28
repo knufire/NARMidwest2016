@@ -35,12 +35,12 @@ void shooterEncoderInterruptHandler (unsigned char pin) {
  * critical to make sure that the derivative doesn't add too much noise.
  */
 void updateShooterSpeedTask() {
-//	int encoderTicks = encoderGet(shooterEncoder);
-//	shooterSpeed = ((encoderTicks / (360.0 * 4)) / (0.01 / 60));
-//	encoderReset(shooterEncoder);
-//	//printf("Shooter speed: %f\n\r", shooterSpeed);
-	shooterSpeed = ((shooterEncoderTicks / (360.0)) / (0.01 / 60));
-	shooterEncoderTicks = 0;
+	int encoderTicks = encoderGet(shooterEncoder);
+	shooterSpeed = ((encoderTicks / (360.0 * 4)) / (0.01 / 60));
+	encoderReset(shooterEncoder);
+	printf("Shooter speed: %f\n\r", shooterSpeed);
+//	shooterSpeed = ((shooterEncoderTicks / (360.0)) / (0.01 / 60));
+//	shooterEncoderTicks = 0;
 
 }
 
@@ -55,13 +55,13 @@ void setShooterMotor (int power) {
 void runShooter() {
 	switch (state) {
 	case (LONG):
-		setShooterMotor(bangBangController(SHOOTER_SPEED_LONG, shooterSpeed));
+		setShooterMotor(bangBangController(SHOOTER_SPEED_LONG, shooterSpeed) * 127);
 		break;
 	case (MID):
-		setShooterMotor(bangBangController(SHOOTER_SPEED_SHORT, shooterSpeed));
+		setShooterMotor(bangBangController(SHOOTER_SPEED_SHORT, shooterSpeed) * 127);
 		break;
 	case (SHORT):
-		setShooterMotor(bangBangController(SHOOTER_SPEED_SHORT, shooterSpeed));
+		setShooterMotor(bangBangController(SHOOTER_SPEED_SHORT, shooterSpeed) * 127);
 		break;
 	case (OFF):
 		setShooterMotor(0);

@@ -12,7 +12,7 @@
 
 void driveDirection(float transX, float transY, float rotation);
 void driveVector(Vector vec, float rotation);
-void driveMotor(int wheelLeft, int wheelRight, int wheelBack);
+void driveMotor(float leftWheelPower, float rightWheelPower, float backWheelPower);
 
 
 #endif /* INCLUDE_DRIVE_H_ */

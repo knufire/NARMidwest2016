@@ -29,50 +29,42 @@ void driveDirection(float transX, float transY, float rotation) {
 			+ (0.42 * rotation);
 	float backWheelPower = 0.83954 * transX - (0.42 * rotation);
 
-	leftWheelPower = limit(leftWheelPower, -1, 1);
-	rightWheelPower = limit(rightWheelPower, -1, 1);
-	backWheelPower = limit(backWheelPower, -1, 1);
-
-	leftWheelPower *= 127;
-	rightWheelPower *= 127;
-	backWheelPower *= 127;
-
 	driveMotor(leftWheelPower, rightWheelPower, backWheelPower);
 }
 
 void driveVector(Vector translate, float rotation) {
 
+	//Calculate motor power by projecting the desired translation
+	//vector onto each wheel
+
 	float leftWheelPower = scalarProjection(translate,
-			leftWheelVector) + rotation * TURNING_SPEED;
+	leftWheelVector) + rotation * TURNING_SPEED;
 	float rightWheelPower = scalarProjection(translate,
-			rightWheelVector) + rotation * TURNING_SPEED;
+	rightWheelVector) + rotation * TURNING_SPEED;
 	float backWheelPower = scalarProjection(translate,
-			backWheelVector) + rotation * TURNING_SPEED;
-
-	leftWheelPower = limit(leftWheelPower, -1, 1);
-	rightWheelPower = limit(rightWheelPower, -1, 1);
-	backWheelPower = limit(backWheelPower, -1, 1);
-
-	leftWheelPower *= 127;
-	rightWheelPower *= 127;
-	backWheelPower *= 127;
+	backWheelVector) + rotation * TURNING_SPEED;
 
 	driveMotor(leftWheelPower, rightWheelPower, backWheelPower);
 }
 
 void driveGyro(Vector translate, float rotation) {
 	//TODO: On falling edge of rotation stick, reset the integral term in the gyro correction PID loop
-	if (fabs(rotation) > 0.05) {
-		driveVector(translate, rotation);
+
+	if (fabs(rotation) > 0.05) {// If we're rotating, ignore gyro and just do
+		driveVector(translate, rotation);	// normal open loop driving.
 		setDesiredHeading();
 	} else {
+		//Calculate gyro correction from PID loop and drive motor power like normal
 		float gyroCorrection = getGyroCorrection();
 		float leftWheelPower = scalarProjection(translate,
-				leftWheelVector) + rotation * TURNING_SPEED;
+		leftWheelVector) + rotation * TURNING_SPEED;
 		float rightWheelPower = scalarProjection(translate,
-				rightWheelVector) + rotation * TURNING_SPEED;
+		rightWheelVector) + rotation * TURNING_SPEED;
 		float backWheelPower = scalarProjection(translate,
-				backWheelVector) + rotation * TURNING_SPEED;
+		backWheelVector) + rotation * TURNING_SPEED;
+
+		//This is how 1114 did their gyro correction. Don't really understand why,
+		//but it worked for them.
 		float maxOut = fmax(fmax(leftWheelPower, rightWheelPower),
 				backWheelPower);
 		float strafeMagnitude = magnitude(translate);
@@ -81,18 +73,25 @@ void driveGyro(Vector translate, float rotation) {
 			rightWheelPower /= maxOut;
 			backWheelPower /= maxOut;
 		}
-		leftWheelPower = limit(
-				leftWheelPower * strafeMagnitude + gyroCorrection, -1, 1);
-		rightWheelPower = limit(
-				rightWheelPower * strafeMagnitude + gyroCorrection, -1, 1);
-		backWheelPower = limit(
-				backWheelPower * strafeMagnitude + gyroCorrection, -1, 1);
+
+		leftWheelPower = leftWheelPower * strafeMagnitude + gyroCorrection;
+		rightWheelPower = rightWheelPower * strafeMagnitude + gyroCorrection;
+		backWheelPower = backWheelPower * strafeMagnitude + gyroCorrection;
 		driveMotor(leftWheelPower, rightWheelPower, backWheelPower);
 	}
-
 }
 
-void driveMotor(int wheelLeft, int wheelRight, int wheelBack) {
+void driveMotor(float leftWheelPower, float rightWheelPower,
+		float backWheelPower) {
+
+	leftWheelPower = limit(leftWheelPower, -1, 1);
+	rightWheelPower = limit(rightWheelPower, -1, 1);
+	backWheelPower = limit(backWheelPower, -1, 1);
+
+	int wheelLeft = leftWheelPower * 127;
+	int wheelRight = rightWheelPower * 127;
+	int wheelBack = backWheelPower * 127;
+
 	motorSet(MOTOR_PORT_DRIVE_LEFT, wheelLeft);
 	motorSet(MOTOR_PORT_DRIVE_RIGHT, wheelRight);
 	motorSet(MOTOR_PORT_DRIVE_BACK, wheelBack);
