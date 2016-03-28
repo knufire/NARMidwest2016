@@ -16,12 +16,11 @@ int currentHeading;
 float gyroCorrection;
 
 void gyroCorrectionPID() {
-	float kp = 5 / 127;
+	float kp = .01;
 	float ki = 0;
-	float kd = 20 / 127;
+	float kd = 0;
 
-	float output = pidController(kp, ki, kd, 10, currentHeading,
-			desiredHeading);
+	float output = pidController(kp, ki, kd, 10, 0, headingError)
 
 	gyroCorrection = output;
 }
@@ -50,6 +49,7 @@ int getHeadingError() {
 void setDesiredHeading() {
 	desiredHeading = correctGyroAngle(gyroGet(gyro));
 	headingError = 0;
+
 }
 
 float getGyroCorrection() {
