@@ -33,6 +33,7 @@
  */
 
 #include "main.h"
+#include "shooter.h"
 
 Encoder driveEncoderLeft;
 Encoder driveEncoderRight;
@@ -70,4 +71,5 @@ void initialize() {
 	driveEncoderBack = encoderInit(5, 6, false);
 	shooterEncoder = encoderInit(3, 4, false);
 	gyro = gyroInit(1, 0);
+	ioSetInterrupt(9, INTERRUPT_EDGE_RISING, shooterEncoderInterruptHandler);
 }
