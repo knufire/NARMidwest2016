@@ -36,7 +36,7 @@ void shooterEncoderInterruptHandler (unsigned char pin) {
  */
 void updateShooterSpeedTask() {
 	int encoderTicks = encoderGet(shooterEncoder);
-	shooterSpeed = ((encoderTicks / (360.0 * 4)) / (0.01)) * 60;
+	shooterSpeed = ((encoderTicks / (360.0 * 4)) / 0.01)*60;
 	encoderReset(shooterEncoder);
 	printf("Shooter speed: %f\n\r", shooterSpeed);
 //	shooterSpeed = ((shooterEncoderTicks / (360.0)) / (0.01 / 60));
