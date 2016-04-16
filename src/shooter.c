@@ -71,5 +71,5 @@ void runShooter() {
 
 void setShooterState(ShooterState newState) {
 	state = newState;
-	printf("Shooter state: %f\n\r", state);
+	printf("Shooter state: %f\n\r", (int)state);
 }

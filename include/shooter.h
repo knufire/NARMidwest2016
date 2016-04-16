@@ -8,7 +8,12 @@
 #ifndef INCLUDE_SHOOTER_H_
 #define INCLUDE_SHOOTER_H_
 
-typedef enum ShooterState {LONG, MID, SHORT, OFF} ShooterState;
+typedef enum ShooterState {
+	LONG = 0,
+	MID,
+	SHORT,
+	OFF
+}ShooterState;
 
 void shooterEncoderInterruptHandler (unsigned char pin);
 void updateShooterSpeedTask();
