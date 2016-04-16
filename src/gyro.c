@@ -16,18 +16,18 @@ int currentHeading;
 float gyroCorrection;
 
 void gyroCorrectionPID() {
-	float kp = .01;
-	float ki = 0;
-	float kd = 0;
+	float kp = .015;
+	float ki = 0.005;
+	float kd = .04;
 
 	float output = pidController(kp, ki, kd, 10, 0, headingError);
 
-	if (fabs(output) < .15) {
+	if (fabs(output) < .2) {
 		if (output > 0) {
-			output += .15;
+			output += .2;
 		}
 		else {
-			output -= .15;
+			output -= .2;
 		}
 	}
 	if (fabs(headingError) < 1) {

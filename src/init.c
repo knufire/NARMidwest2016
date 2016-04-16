@@ -67,9 +67,9 @@ void initializeIO() {
  */
 void initialize() {
 	driveEncoderLeft = encoderInit(1, 2, false);
-	driveEncoderRight = encoderInit(7, 8, false);
+	driveEncoderRight = encoderInit(3, 4, false);
 	driveEncoderBack = encoderInit(5, 6, false);
-	shooterEncoder = encoderInit(3, 4, false);
+	shooterEncoder = encoderInit(7, 8, false);
 	gyro = gyroInit(1, 0);
 	ioSetInterrupt(9, INTERRUPT_EDGE_RISING, shooterEncoderInterruptHandler);
 }
