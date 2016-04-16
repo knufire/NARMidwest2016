@@ -71,15 +71,19 @@ void updateShooterState(void *ignore) {
 
 	if (shooterOff) {
 		setShooterState(OFF);
+		printf("Shooter off\n\r");
 	}
 	else if (shooterShort) {
 		setShooterState(SHORT);
+		printf("Shooter short\n\r");
 	}
 	else if (shooterMid) {
 		setShooterState(MID);
+		printf("Shooter mid\n\r");
 	}
 	else if (shooterLong) {
 		setShooterState(LONG);
+		printf("Shooter long\n\r");
 	}
 	taskDelay(20);
 }
