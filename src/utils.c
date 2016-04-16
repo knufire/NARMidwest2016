@@ -68,9 +68,9 @@ int latchFlag(bool highInput, bool lowInput, int flag) {
  */
 
 float bangBangController(int setpoint, int var) {
-	if (var > setpoint) {
+	if (var < setpoint) {
 		return 1.0;
-	} else if (var < setpoint) {
+	} else if (var > setpoint) {
 		return 0;
 	} else {
 		return 0.5;
