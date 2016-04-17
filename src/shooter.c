@@ -36,7 +36,7 @@ void shooterEncoderInterruptHandler (unsigned char pin) {
  */
 void updateShooterSpeedTask() {
 	int encoderTicks = encoderGet(shooterEncoder);
-	shooterSpeed = ((encoderTicks / (360.0 * 4)) / 0.01)*60;
+	shooterSpeed = ((encoderTicks / (360.0 * 4)) / 0.01)*-60;
 	encoderReset(shooterEncoder);
 	printf("Shooter speed: %f\n\r", shooterSpeed);
 //	shooterSpeed = ((shooterEncoderTicks / (360.0)) / (0.01 / 60));
@@ -49,7 +49,7 @@ void setShooterMotor (int power) {
 	motorSet(MOTOR_PORT_SHOOTER_FWD2, power);
 	motorSet(MOTOR_PORT_SHOOTER_REV1, -power);
 	motorSet(MOTOR_PORT_SHOOTER_REV2, -power);
-	printf("Shooter Motor Value: %d\n\r", power);
+	//printf("Shooter Motor Value: %d\n\r", power);
 }
 
 void runShooter() {
@@ -57,7 +57,7 @@ void runShooter() {
 	switch (state) {
 	case (LONG):
 		controllerOutput = bangBangController(SHOOTER_SPEED_LONG, shooterSpeed);
-		printf("Shooter Power: %f\n\r", controllerOutput);
+		//printf("Shooter Power: %f\n\r", controllerOutput);
 		setShooterMotor(controllerOutput * 127);
 		break;
 	case (MID):
