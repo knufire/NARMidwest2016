@@ -49,7 +49,7 @@ void setShooterMotor (int power) {
 	motorSet(MOTOR_PORT_SHOOTER_FWD2, power);
 	motorSet(MOTOR_PORT_SHOOTER_REV1, -power);
 	motorSet(MOTOR_PORT_SHOOTER_REV2, -power);
-
+	printf("Shooter Motor Value: %d\n\r", power);
 }
 
 void runShooter() {
@@ -57,7 +57,7 @@ void runShooter() {
 	switch (state) {
 	case (LONG):
 		controllerOutput = bangBangController(SHOOTER_SPEED_LONG, shooterSpeed);
-		printf("Shooter Power: %f/n/r", controllerOutput);
+		printf("Shooter Power: %f\n\r", controllerOutput);
 		setShooterMotor(controllerOutput * 127);
 		break;
 	case (MID):
