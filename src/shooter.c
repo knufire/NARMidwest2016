@@ -55,7 +55,9 @@ void setShooterMotor (int power) {
 void runShooter() {
 	switch (state) {
 	case (LONG):
-		setShooterMotor(bangBangController(SHOOTER_SPEED_LONG, shooterSpeed) * 127);
+		float controllerOutput = bangBangController(SHOOTER_SPEED_LONG, shooterSpeed);
+		printf("Shooter Power: %f/n/r", controllerOutput);
+		setShooterMotor(controllerOutput * 127);
 		break;
 	case (MID):
 		setShooterMotor(bangBangController(SHOOTER_SPEED_SHORT, shooterSpeed) * 127);

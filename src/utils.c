@@ -67,7 +67,7 @@ int latchFlag(bool highInput, bool lowInput, int flag) {
  * @param var The process variable
  */
 
-float bangBangController(int setpoint, int var) {
+float bangBangController(int setpoint, float var) {
 	if (var < setpoint) {
 		return 1.0;
 	} else if (var > setpoint) {
