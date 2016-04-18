@@ -13,14 +13,15 @@
 
 #define MOTOR_PORT_SHOOTER_REV1		4
 #define MOTOR_PORT_SHOOTER_FWD1		6
-#define MOTOR_PORT_SHOOTER_REV2		5
-#define MOTOR_PORT_SHOOTER_FWD2		7
+#define MOTOR_PORT_SHOOTER_FWD2		5
+#define MOTOR_PORT_SHOOTER_REV2		7
 
 #define SHOOTER_SPEED_SHORT			1000	// Shooter RPM for close shot
 #define SHOOTER_SPEED_MID			1500	// Shooter RPM for mid shot
 #define SHOOTER_SPEED_LONG			2800	// Shooter RPM for far/fullcourt shot
 
 int shooterFlag = 0;
+int shooterTargetSpeed = 0;
 float shooterSpeed = 0;
 int shooterEncoderTicks = 0;
 ShooterState state = OFF;
@@ -53,26 +54,22 @@ void setShooterMotor (int power) {
 }
 
 void runShooter() {
-	float controllerOutput;
-	switch (state) {
-	case (LONG):
-		controllerOutput = bangBangController(SHOOTER_SPEED_LONG, shooterSpeed);
-		printf("Shooter Power: %f\n\r", controllerOutput);
-		setShooterMotor(controllerOutput * 127);
-		break;
-	case (MID):
-		//setShooterMotor(bangBangController(SHOOTER_SPEED_SHORT, shooterSpeed) * 127);
-		setShooterMotor(127);
-		break;
-	case (SHORT):
-		setShooterMotor(bangBangController(SHOOTER_SPEED_SHORT, shooterSpeed) * 127);
-		break;
-	case (OFF):
-		setShooterMotor(0);
-		break;
-	}
+	setShooterMotor(bangBangController(shooterTargetSpeed, shooterSpeed));
 }
 
 void setShooterState(ShooterState newState) {
-	state = newState;
+switch (state) {
+	case (LONG):
+		shooterTargetSpeed = SHOOTER_SPEED_LONG;
+		break;
+	case (MID):
+		shooterTargetSpeed = SHOOTER_SPEED_MID;
+		break;
+	case (SHORT):
+		shooterTargetSpeed = SHOOTER_SPEED_SHORT;;
+		break;
+	case (OFF):
+		shooterTargetSpeed = 0;
+		break;
+	}
 }
