@@ -47,9 +47,13 @@ void setShooterMotor (int power) {
 }
 
 void runShooter() {
-	float controllerOutput = bangBangController(shooterTargetSpeed, shooterSpeed);
-	setShooterMotor(controllerOutput * 127);
-	printf("%f %f %d\n\r", controllerOutput, shooterSpeed, shooterTargetSpeed);
+	if (shooterSpeed < shooterTargetSpeed) {
+		setShooterMotor(127);
+		printf("1 %f %d\n\r", shooterSpeed, shooterTargetSpeed);
+	} else {
+		setShooterMotor(0);
+		printf("0 %f %d\n\r", shooterSpeed, shooterTargetSpeed);
+	}
 }
 
 void setShooterRPM(int rpm) {
