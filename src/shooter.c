@@ -16,15 +16,10 @@
 #define MOTOR_PORT_SHOOTER_FWD2		5
 #define MOTOR_PORT_SHOOTER_REV2		7
 
-#define SHOOTER_SPEED_SHORT			1000	// Shooter RPM for close shot
-#define SHOOTER_SPEED_MID			1500	// Shooter RPM for mid shot
-#define SHOOTER_SPEED_LONG			2800	// Shooter RPM for far/fullcourt shot
-
 int shooterFlag = 0;
 int shooterTargetSpeed = 0;
 float shooterSpeed = 0;
 int shooterEncoderTicks = 0;
-ShooterState state = OFF;
 
 void shooterEncoderInterruptHandler (unsigned char pin) {
 	shooterEncoderTicks++;
@@ -57,19 +52,7 @@ void runShooter() {
 	printf("%f %f %d\n\r", controllerOutput, shooterSpeed, shooterTargetSpeed);
 }
 
-void setShooterState(ShooterState newState) {
-switch (state) {
-	case (LONG):
-		shooterTargetSpeed = SHOOTER_SPEED_LONG;
-		break;
-	case (MID):
-		shooterTargetSpeed = SHOOTER_SPEED_MID;
-		break;
-	case (SHORT):
-		shooterTargetSpeed = SHOOTER_SPEED_SHORT;
-		break;
-	case (OFF):
-		shooterTargetSpeed = 0;
-		break;
-	}
+void setShooterRPM(int rpm) {
+	shooterTargetSpeed = rpm;
 }
+

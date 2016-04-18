@@ -70,16 +70,16 @@ void updateShooterState(void *ignore) {
 	bool shooterShort = joystickGetDigital(1, 8, JOY_LEFT);
 
 	if (shooterOff) {
-		setShooterState(OFF);
+		setShooterRPM(0);
 	}
 	else if (shooterShort) {
-		setShooterState(SHORT);
+		setShooterRPM(SHOOTER_SPEED_SHORT);
 	}
 	else if (shooterMid) {
-		setShooterState(MID);
+		setShooterRPM(SHOOTER_SPEED_MID);
 	}
 	else if (shooterLong) {
-		setShooterState(LONG);
+		setShooterRPM(SHOOTER_SPEED_LONG);
 	}
 	taskDelay(20);
 }

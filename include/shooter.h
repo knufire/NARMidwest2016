@@ -8,18 +8,15 @@
 #ifndef INCLUDE_SHOOTER_H_
 #define INCLUDE_SHOOTER_H_
 
-typedef enum ShooterState {
-	LONG = 0,
-	MID,
-	SHORT,
-	OFF
-}ShooterState;
-
 void shooterEncoderInterruptHandler (unsigned char pin);
 void updateShooterSpeedTask();
 void setShooterMotor (int power);
 void runShooter();
-void setShooterState(ShooterState state);
+void setShooterRPM(int rpm);
+
+#define SHOOTER_SPEED_SHORT			1000	// Shooter RPM for close shot
+#define SHOOTER_SPEED_MID			1500	// Shooter RPM for mid shot
+#define SHOOTER_SPEED_LONG			2800	// Shooter RPM for far/fullcourt shot
 
 
 
