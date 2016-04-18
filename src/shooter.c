@@ -47,13 +47,19 @@ void setShooterMotor (int power) {
 }
 
 void runShooter() {
-	if (shooterSpeed < shooterTargetSpeed) {
-		setShooterMotor(127);
-		printf("1 %f %d\n\r", shooterSpeed, shooterTargetSpeed);
-	} else {
-		setShooterMotor(0);
-		printf("0 %f %d\n\r", shooterSpeed, shooterTargetSpeed);
+	if (shooterTargetSpeed != 0) {
+		if (shooterSpeed < shooterTargetSpeed) {
+					setShooterMotor(127);
+					printf("1 %f %d\n\r", shooterSpeed, shooterTargetSpeed);
+		} else {
+			setShooterMotor(0);
+			printf("0 %f %d\n\r", shooterSpeed, shooterTargetSpeed);
+		}
 	}
+	else {
+		setShooterMotor(0);
+	}
+
 }
 
 void setShooterRPM(int rpm) {
