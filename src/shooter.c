@@ -81,6 +81,7 @@ void runShooter() {
 		float feedForward = .6;
 		float power = ((error * Kp) + feedForward) * 127;
 		setShooterMotor(power);
+		printf("%f %f %d\n\r", power, shooterSpeed, shooterTargetSpeed);
 	}
 	else {
 		setShooterMotor(0);
