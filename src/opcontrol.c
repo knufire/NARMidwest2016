@@ -105,9 +105,9 @@ void updateShooterState(void *ignore) {
  */
 
 void operatorControl() {
-	taskRunLoop(updateShooterSpeedTask, 5);
+	taskRunLoop(updateShooterSpeedTask, 10);
 	taskRunLoop(RefreshGyro, 10);
-	taskRunLoop(runShooter, 5);
+	taskRunLoop(runShooter, 10);
 	while (1) {
 		taskCreate(updateDriveTask, TASK_DEFAULT_STACK_SIZE, NULL,
 		TASK_PRIORITY_DEFAULT);
