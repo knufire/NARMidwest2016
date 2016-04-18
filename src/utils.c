@@ -73,7 +73,7 @@ float bangBangController(int setpoint, float var) {
 	} else if (var > setpoint) {
 		return 0;
 	} else {
-		return 0.5;
+		return 0;
 	}
 }
 
