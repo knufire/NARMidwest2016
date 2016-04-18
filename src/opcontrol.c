@@ -105,7 +105,7 @@ void updateShooterState(void *ignore) {
  */
 
 void operatorControl() {
-	taskRunLoop(updateShooterSpeedTask, 10);
+	taskRunLoop(updateShooterSpeedTask, 5);
 	taskRunLoop(RefreshGyro, 10);
 	taskRunLoop(runShooter, 5);
 	while (1) {
