@@ -47,30 +47,40 @@ void setShooterMotor (int power) {
 }
 
 void runShooter() {
+//	if (shooterTargetSpeed != 0) {
+//		float error = shooterSpeed - shooterTargetSpeed;
+//		if (fabsf(error) < 100) {
+//			setShooterMotor(89);
+//			printf(".7 %f %d\n\r", shooterSpeed, shooterTargetSpeed);
+//		} else if (fabsf(error) < 200) {
+//			if (error < 0){
+//				setShooterMotor(114);
+//				printf(".9 %f %d\n\r", shooterSpeed, shooterTargetSpeed);
+//			}
+//			else {
+//				setShooterMotor(63);
+//				printf(".5 %f %d\n\r", shooterSpeed, shooterTargetSpeed);
+//			}
+//		} else {
+//			if (error < 0) {
+//				setShooterMotor(127);
+//				printf("1 %f %d\n\r", shooterSpeed, shooterTargetSpeed);
+//			}
+//			else {
+//				setShooterMotor(38);
+//				printf(".3 %f %d\n\r", shooterSpeed, shooterTargetSpeed);
+//			}
+//		}
+//	}
+//	else {
+//		setShooterMotor(0);
+//	}
 	if (shooterTargetSpeed != 0) {
-		float error = shooterSpeed - shooterTargetSpeed;
-		if (fabsf(error) < 100) {
-			setShooterMotor(100);
-			printf(".8 %f %d\n\r", shooterSpeed, shooterTargetSpeed);
-		} else if (fabsf(error) < 200) {
-			if (error < 0){
-				setShooterMotor(114);
-				printf(".9 %f %d\n\r", shooterSpeed, shooterTargetSpeed);
-			}
-			else {
-				setShooterMotor(63);
-				printf(".5 %f %d\n\r", shooterSpeed, shooterTargetSpeed);
-			}
-		} else {
-			if (error < 0) {
-				setShooterMotor(127);
-				printf("1 %f %d\n\r", shooterSpeed, shooterTargetSpeed);
-			}
-			else {
-				setShooterMotor(38);
-				printf(".3 %f %d\n\r", shooterSpeed, shooterTargetSpeed);
-			}
-		}
+		float error = (shooterSpeed - shooterTargetSpeed) * -1;
+		float Kp = 0.0;
+		float feedForward = .6;
+		float power = ((error * Kp) + feedForward) * 127;
+		setShooterMotor(power);
 	}
 	else {
 		setShooterMotor(0);
