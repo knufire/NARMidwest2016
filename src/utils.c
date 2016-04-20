@@ -99,10 +99,10 @@ float pidController(float Kp, float Ki, float Kd, float dt, float setpoint,
 	float d = Kd * (error - lastErr) * dt / 1000;
 
 	lastErr = error;
-	errorSum += error;
+	errorSum += (error * dt / 1000);
 
 	float output = p + i + d;
-	output = limit(output, -1, 1);
+	output = limit(output, -127, 127);
 
 	return output;
 }

@@ -26,15 +26,39 @@ bool conveyorOutLastVal = false;
 bool shooterOnLastVal = false;
 bool shooterOffLastVal = false;
 
+#define C1LX joystickGetAnalog(2, 4)
+#define C1LY joystickGetAnalog(2, 3)
+#define C1RX joystickGetAnalog(2, 1)
+bool GyroSwitch = false;//Turn True for gyro correction
 
 void updateDriveTask(void *ignore) {
 	//Grab Joystick Values
-	Vector vec;
-	vec.x = joystickGetAnalog(1, 3) / 127.0;
-	vec.y = joystickGetAnalog(1, 4) / -127.0;
-	float rotation = joystickGetAnalog(1, 2) / 127.0;
-	driveGyro(vec, rotation);
-	taskDelay(20);
+//	Vector vec;
+//	vec.x = joystickGetAnalog(2, 3) / 127.0;
+//	vec.y = joystickGetAnalog(2, 4) / -127.0;
+//	float rotation = joystickGetAnalog(2, 1) / 127.0;
+//	driveGyro(vec, rotation);
+//	taskDelay(20);
+
+	switch( DecideDrive(C1LX, C1LY, C1RX, GyroSwitch) )//Switch to calcDrive 2
+			{
+				case 1:
+					CalcDrive2(C1LX, C1LY, getGyroCorrection());
+					break;
+
+				case 2:
+					CalcDrive2(C1LX, C1LY, C1RX);
+					setDesiredHeading();
+					break;
+
+				case 3:
+					CalcDrive2(0, 0, getGyroCorrection());
+					break;
+
+				case 4:
+					CalcDrive2(0, 0, 0);
+					break;
+			}
 }
 
 void updateIntakeTask(void *ignore) {

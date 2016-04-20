@@ -47,6 +47,98 @@ void driveVector(Vector translate, float rotation) {
 	driveMotor(leftWheelPower, rightWheelPower, backWheelPower);
 }
 
+double transMult;
+double rotMult;
+double left;
+double middle;
+double right;
+#define PI 3.14159265
+double val = PI / 180;
+
+void Drive(int x, int y, int z) // Left Middle Right
+{
+	motorSet(MOTOR_PORT_DRIVE_LEFT,x);
+	motorSet(MOTOR_PORT_DRIVE_BACK,y);
+	motorSet(MOTOR_PORT_DRIVE_RIGHT,z);
+}
+
+void CalcDrive2(int x, int y, int rot)
+{
+	int min = 15;
+
+	if ( abs(x) < min)
+		x = 0;
+
+	if ( abs(y) < min)
+		y = 0;
+
+	if ( abs(rot) < min)
+		rot = 0;
+
+	if (abs(x) > abs(y))
+	{
+		transMult = (double) (abs(x)  ) / ( abs(x) + abs(rot) );
+		rotMult = (double) (abs(rot)  ) / ( abs(x) + abs(rot) );
+	}
+	else
+	{
+		transMult = (double) (abs(y)  ) / ( abs(y) + abs(rot) );
+		rotMult = (double) (abs(rot)  ) / ( abs(y) + abs(rot) );
+	}
+
+	if ( (x == 0) && (y == 0) && (rot == 0) )
+	{
+		transMult = (double)0;
+		rotMult = (double)0;
+	}
+
+	//transMult = 0.5;
+	//rotMult = 0.5;
+
+	left = ( cos(60 * val) * x ) + ( sin(60 * val) * y );
+	right = ( cos(300 * val) * x ) + ( sin(300 * val) * y);
+	middle = 1 * x;//adjust multiplyer to taste
+
+	left *= transMult;
+	right *= transMult;
+	middle *= transMult;
+
+	left += rot * rotMult;
+	right += rot * rotMult;
+	middle += rot * -rotMult;//adjust multiplyer to taste
+
+	Drive( (int)round(left), (int)round(middle), (int)round(right) );
+	//printf("CalcDrive -- Left %f  middle %f  Right %f\n\r ", left, Middle, Right);
+	//printf("CalcDrive -- x:%d  y:%d  rot:%d  tansMult:%f  RotMult:%f\n\r ", x, y, rot, transMult, rotMult);
+}
+
+int DecideDrive (int x, int y, int r, bool GyroSwitch)
+
+{
+	if( ( fabs(y) > 10 ) || ( fabs(x) > 10 ) || ( fabs(r) > 10 ))
+	{
+		if (fabs(r) < 10 && GyroSwitch)
+		{
+			return 1;
+		}
+		else
+		{
+			return 2;
+		}
+	}
+	else
+	{
+		if(GyroSwitch)
+		{
+			return 3;
+		}
+		else
+		{
+			return 4;
+		}
+	}
+}
+
 void driveGyro(Vector translate, float rotation) {
 	//TODO: On falling edge of rotation stick, reset the integral term in the gyro correction PID loop
 
@@ -96,3 +188,6 @@ void driveMotor(float leftWheelPower, float rightWheelPower,
 	motorSet(MOTOR_PORT_DRIVE_RIGHT, wheelRight);
 	motorSet(MOTOR_PORT_DRIVE_BACK, wheelBack);
 }
+
+
+
