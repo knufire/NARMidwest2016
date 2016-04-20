@@ -49,13 +49,12 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 extern Gyro gyro;
 extern Encoder driveEncoderLeft;
 extern Encoder driveEncoderRight;
 extern Encoder driveEncoderBack;
 extern Encoder shooterEncoder;
-
-
 
 // A function prototype looks exactly like its declaration, but with a semicolon instead of
 // actual code. If a function does not match a prototype, compile errors will occur.

@@ -16,9 +16,9 @@ int currentHeading;
 float gyroCorrection;
 
 void gyroCorrectionPID() {
-	float kp = .05;
-	float ki = 0;
-	float kd = 1;
+	float kp = .015;
+	float ki = 0.005;
+	float kd = .04;
 
 	float output = pidController(kp, ki, kd, 10, 0, headingError);
 
@@ -30,7 +30,7 @@ void gyroCorrectionPID() {
 			output -= .2;
 		}
 	}
-	if (fabs(headingError) < 2) {
+	if (fabs(headingError) < 1) {
 		output = 0;
 	}
 
@@ -38,7 +38,7 @@ void gyroCorrectionPID() {
 	gyroCorrection = output;
 }
 
-int correctGyroAngle(int x) { //JR Speak: GyroCorrect
+int correctGyroAngle(int x) {
 	while (x > 360) {
 		x = x - 360;
 	}
@@ -49,7 +49,7 @@ int correctGyroAngle(int x) { //JR Speak: GyroCorrect
 	return x;
 }
 
-int getHeadingError() { //JR Speak: GetOffset
+int getHeadingError() {
 	int z = currentHeading - desiredHeading;
 	if (z > 180)
 		z -= 360;
@@ -59,7 +59,7 @@ int getHeadingError() { //JR Speak: GetOffset
 	return z;
 }
 
-void setDesiredHeading() { //JR Speak: set heading
+void setDesiredHeading() {
 	desiredHeading = correctGyroAngle(gyroGet(gyro));
 	headingError = 0;
 
