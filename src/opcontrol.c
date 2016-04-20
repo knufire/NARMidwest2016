@@ -1,11 +1,11 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#include "../include/API.h"
-#include "../include/gyro.h"
-#include "../include/main.h"
-#include "../include/math.h"
-#include "../include/utils.h"
+#include "API.h"
+#include "gyro.h"
+#include "main.h"
+#include "math.h"
+#include "utils.h"
 #include "drive.h"
 #include "vector.h"
 #include "shooter.h"
@@ -14,9 +14,9 @@
 #define MOTOR_PORT_CONVEYOR_REV		1
 #define MOTOR_PORT_CONVEYOR_FWD		10
 
+
 int conveyorFlag = 0;
 int intakeFlag = 0;
-
 
 //Storage for rising edge of buttons
 bool intakeInLastVal = false;
@@ -26,18 +26,24 @@ bool conveyorOutLastVal = false;
 bool shooterOnLastVal = false;
 bool shooterOffLastVal = false;
 
+//Change to true to enable field-centric drive
+bool fieldCentricDrive = false;
 
-void updateDriveTask(void *ignore) {
+
+void updateDrive() {
 	//Grab Joystick Values
 	Vector vec;
 	vec.x = joystickGetAnalog(1, 3) / 127.0;
 	vec.y = joystickGetAnalog(1, 4) / -127.0;
 	float rotation = joystickGetAnalog(1, 2) / 127.0;
+	if (fieldCentricDrive) {
+		vec = rotate(vec, abs(getCurrentHeading()-360));
+	}
 	driveGyro(vec, rotation);
 	taskDelay(20);
 }
 
-void updateIntakeTask(void *ignore) {
+void updateIntake() {
 	//Grab Joystick values
 	bool intakeIn = joystickGetDigital(1, 6, JOY_UP);
 	bool intakeOut = joystickGetDigital(1, 6, JOY_DOWN);
@@ -63,7 +69,7 @@ void updateIntakeTask(void *ignore) {
 	taskDelay(20);
 }
 
-void updateShooterState(void *ignore) {
+void updateShooterState() {
 	bool shooterMid = joystickGetDigital(1, 8, JOY_UP);
 	bool shooterOff = joystickGetDigital(1, 8, JOY_DOWN);
 	bool shooterLong = joystickGetDigital(1, 8, JOY_RIGHT);
@@ -84,7 +90,11 @@ void updateShooterState(void *ignore) {
 	taskDelay(20);
 }
 
-
+void updateHmiTask() {
+	updateDrive();
+	updateIntake();
+	updateShooterState();
+}
 
 /*
  * Runs the user operator control code. This function will be started in its own task with the
@@ -105,16 +115,10 @@ void updateShooterState(void *ignore) {
  */
 
 void operatorControl() {
-	taskRunLoop(updateShooterSpeedTask, 10);
-	taskRunLoop(RefreshGyro, 10);
-	taskRunLoop(runShooter, 10);
+	taskRunLoop(refreshGyroTask, 10);
+	taskRunLoop(shooterClosedLoopTask, 10);
+	taskRunLoop(updateHmiTask, 20);
 	while (1) {
-		taskCreate(updateDriveTask, TASK_DEFAULT_STACK_SIZE, NULL,
-		TASK_PRIORITY_DEFAULT);
-		taskCreate(updateIntakeTask, TASK_DEFAULT_STACK_SIZE, NULL,
-		TASK_PRIORITY_DEFAULT);
-		taskCreate(updateShooterState, TASK_DEFAULT_STACK_SIZE, NULL,
-		TASK_PRIORITY_DEFAULT);
-		delay(10);
+		delay(20);
 	}
 }

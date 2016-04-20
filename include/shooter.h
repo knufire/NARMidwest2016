@@ -9,10 +9,11 @@
 #define INCLUDE_SHOOTER_H_
 
 void shooterEncoderInterruptHandler (unsigned char pin);
-void updateShooterSpeedTask();
+void updateShooterSpeed();
 void setShooterMotor (int power);
-void runShooter();
+void runShooterControlLoop();
 void setShooterRPM(int rpm);
+void shooterClosedLoopTask();
 
 #define SHOOTER_SPEED_SHORT			1000	// Shooter RPM for close shot
 #define SHOOTER_SPEED_MID			2800	// Shooter RPM for mid shot

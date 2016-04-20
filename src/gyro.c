@@ -69,7 +69,7 @@ float getGyroCorrection() {
 	return gyroCorrection;
 }
 
-void RefreshGyro() {
+void refreshGyroTask() {
 	currentHeading = correctGyroAngle(gyroGet(gyro));
 	getHeadingError();
 	gyroCorrectionPID();
@@ -78,4 +78,9 @@ void RefreshGyro() {
 //	printf("Correction: %f\n\r", gyroCorrection);
 
 }
+
+int getCurrentHeading() {
+	return currentHeading;
+}
+
 

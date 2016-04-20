@@ -16,8 +16,10 @@ int getHeadingError();
 
 void setDesiredHeading();
 
-void RefreshGyro();
+void refreshGyroTask();
 
 float getGyroCorrection();
+
+int getCurrentHeading();
 
 #endif /* INCLUDE_GYRO_H_ */

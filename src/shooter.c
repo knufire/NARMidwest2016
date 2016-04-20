@@ -30,7 +30,7 @@ void shooterEncoderInterruptHandler (unsigned char pin) {
  * precisely every 10ms; much more precisely than the general teleop loop. The even dt is
  * critical to make sure that the derivative doesn't add too much noise.
  */
-void updateShooterSpeedTask() {
+void updateShooterSpeed() {
 	int encoderTicks = encoderGet(shooterEncoder);
 	shooterSpeed = ((encoderTicks / (360.0 * 4)) / 0.01)*-60;
 	encoderReset(shooterEncoder);
@@ -46,7 +46,7 @@ void setShooterMotor (int power) {
 	motorSet(MOTOR_PORT_SHOOTER_REV2, -power);
 }
 
-void runShooter() {
+void runShooterControlLoop() {
 //	if (shooterTargetSpeed != 0) {
 //		float error = shooterSpeed - shooterTargetSpeed;
 //		if (fabsf(error) < 100) {
@@ -102,3 +102,7 @@ void setShooterRPM(int rpm) {
 	shooterTargetSpeed = rpm;
 }
 
+void shooterClosedLoopTask() {
+	updateShooterSpeed();
+	runShooterControlLoop();
+}
