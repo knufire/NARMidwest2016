@@ -10,21 +10,13 @@
 #include "vector.h"
 #include "shooter.h"
 
-#define MOTOR_PORT_INTAKE			9
-#define MOTOR_PORT_CONVEYOR_REV		1
-#define MOTOR_PORT_CONVEYOR_FWD		10
+#define MOTOR_PORT_INTAKE_REV		1
+#define MOTOR_PORT_INTAKE_FWD		10
 
 
-int conveyorFlag = 0;
-int intakeFlag = 0;
-
-//Storage for rising edge of buttons
-bool intakeInLastVal = false;
-bool intakeOutLastVal = false;
-bool conveyorInLastVal = false;
-bool conveyorOutLastVal = false;
-bool shooterOnLastVal = false;
-bool shooterOffLastVal = false;
+int intakeState = 0;
+int lastIntakeState = 0;
+float intakePulseStartTime = 0;
 
 //Change to true to enable field-centric drive
 bool fieldCentricDrive = false;
@@ -40,34 +32,54 @@ void updateDrive() {
 		vec = rotate(vec, abs(getCurrentHeading()-360));
 	}
 	driveGyro(vec, rotation);
-	taskDelay(20);
 }
 
 void updateIntake() {
 	//Grab Joystick values
 	bool intakeIn = joystickGetDigital(1, 6, JOY_UP);
 	bool intakeOut = joystickGetDigital(1, 6, JOY_DOWN);
-	bool conveyorIn = joystickGetDigital(1, 5, JOY_UP);
-	bool conveyorOut = joystickGetDigital(1, 5, JOY_DOWN);
+	bool intakeOff = joystickGetDigital(1, 5, JOY_UP);
+	bool intakePulse = joystickGetDigital(1, 5, JOY_DOWN);
+
 
 	//Set state flags
-	intakeFlag = latchFlag(intakeIn > intakeInLastVal,
-			intakeOut > intakeOutLastVal, intakeFlag);
-	conveyorFlag = latchFlag(conveyorIn > conveyorInLastVal,
-			conveyorOut > conveyorOutLastVal, conveyorFlag);
+	if (intakeIn) {
+		intakeState = 1;
+	}
+	else if (intakeOut) {
+		intakeState = -1;
+	}
+	else if (intakeOff) {
+		intakeState = 0;
+	}
+	else if (intakePulse) {
+		intakeState = 2;
+	}
 
 	//Set motors based on
-	motorSet(MOTOR_PORT_INTAKE, intakeFlag * -127);
-	motorSet(MOTOR_PORT_CONVEYOR_FWD, conveyorFlag * 127);
-	motorSet(MOTOR_PORT_CONVEYOR_REV, conveyorFlag * -127);
+	if (intakeState < 2) {
+		motorSet(MOTOR_PORT_INTAKE_FWD, intakeState * 127);
+		motorSet(MOTOR_PORT_INTAKE_REV, intakeState * -127);
+	}
 
-	//Store states to determine rising edges on next loop
-	intakeInLastVal = intakeIn;
-	intakeOutLastVal = intakeOut;
-	conveyorInLastVal = conveyorIn;
-	conveyorOutLastVal = conveyorOut;
-	taskDelay(20);
+	//Pulse conveyor backwards to free flywheel
+	else {
+		if (lastIntakeState != 2) {
+			intakePulseStartTime = millis();
+		}
+		if (millis() > intakePulseStartTime + 100) {
+			intakeState = 0;
+		}
+		else {
+			motorSet(MOTOR_PORT_INTAKE_FWD, intakeState * 127);
+			motorSet(MOTOR_PORT_INTAKE_REV, intakeState * -127);
+		}
+	}
+
+
+	lastIntakeState = intakeState;
 }
+
 
 void updateShooterState() {
 	bool shooterMid = joystickGetDigital(1, 8, JOY_UP);
@@ -87,13 +99,16 @@ void updateShooterState() {
 	else if (shooterLong) {
 		setShooterRPM(SHOOTER_SPEED_LONG);
 	}
-	taskDelay(20);
 }
 
 void updateHmiTask() {
 	updateDrive();
 	updateIntake();
 	updateShooterState();
+}
+
+void cockShooter() {
+	intakeState = 2;
 }
 
 /*
@@ -116,7 +131,7 @@ void updateHmiTask() {
 
 void operatorControl() {
 	taskRunLoop(refreshGyroTask, 10);
-	taskRunLoop(shooterClosedLoopTask, 10);
+	taskRunLoop(shooterClosedLoopTask, 20);
 	taskRunLoop(updateHmiTask, 20);
 	while (1) {
 		delay(20);

@@ -95,7 +95,6 @@ void runShooterControlLoop() {
 	else {
 		setShooterMotor(0);
 	}
-
 }
 
 void setShooterRPM(int rpm) {

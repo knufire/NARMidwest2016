@@ -14,7 +14,8 @@
 
 #define MOTOR_PORT_DRIVE_LEFT		8
 #define MOTOR_PORT_DRIVE_RIGHT		3
-#define MOTOR_PORT_DRIVE_BACK		2
+#define MOTOR_PORT_DRIVE_BACK_FWD	2
+#define MOTOR_PORT_DRIVE_BACK_REV	9
 #define RAD_CONVERSION 				M_PI / 180
 #define TURNING_SPEED				1
 
@@ -88,11 +89,13 @@ void driveMotor(float leftWheelPower, float rightWheelPower,
 	rightWheelPower = limit(rightWheelPower, -1, 1);
 	backWheelPower = limit(backWheelPower, -1, 1);
 
+
 	int wheelLeft = leftWheelPower * 127;
 	int wheelRight = rightWheelPower * 127;
 	int wheelBack = backWheelPower * 127;
 
 	motorSet(MOTOR_PORT_DRIVE_LEFT, wheelLeft);
 	motorSet(MOTOR_PORT_DRIVE_RIGHT, wheelRight);
-	motorSet(MOTOR_PORT_DRIVE_BACK, wheelBack);
+	motorSet(MOTOR_PORT_DRIVE_BACK_FWD, wheelBack);
+	motorSet(MOTOR_PORT_DRIVE_BACK_REV, -wheelBack);
 }
