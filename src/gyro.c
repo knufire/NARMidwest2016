@@ -14,23 +14,16 @@ int headingError;
 int desiredHeading;
 int currentHeading;
 float gyroCorrection;
+int actualCurrentHeading;
 
 void gyroCorrectionPID() {
-	float kp = .015;
-	float ki = 0.005;
-	float kd = .04;
+	float kp = 1.4;
+	float ki = 0;
+	float kd = 0.4;
 
 	float output = pidController(kp, ki, kd, 10, 0, headingError);
 
-	if (fabs(output) < .2) {
-		if (output > 0) {
-			output += .2;
-		}
-		else {
-			output -= .2;
-		}
-	}
-	if (fabs(headingError) < 1) {
+	if (fabs(headingError) < 2) {
 		output = 0;
 	}
 
@@ -71,16 +64,16 @@ float getGyroCorrection() {
 
 void refreshGyroTask() {
 	currentHeading = correctGyroAngle(gyroGet(gyro));
+	actualCurrentHeading = gyroGet(gyro);
 	getHeadingError();
 	gyroCorrectionPID();
-//	printf("Heading: %d\n\r", currentHeading);
-//	printf("Offset: %d\n\r", headingError);
-//	printf("Correction: %f\n\r", gyroCorrection);
+	//printf("%d,%d,%f \n\r", currentHeading, headingError, gyroCorrection);
 
 }
 
 int getCurrentHeading() {
-	return currentHeading;
+
+	return actualCurrentHeading;
 }
 
 

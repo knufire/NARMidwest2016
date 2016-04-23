@@ -13,8 +13,8 @@
 
 #define MOTOR_PORT_SHOOTER_REV1		4
 #define MOTOR_PORT_SHOOTER_FWD1		6
-#define MOTOR_PORT_SHOOTER_FWD2		5
-#define MOTOR_PORT_SHOOTER_REV2		7
+#define MOTOR_PORT_SHOOTER_FWD2		7
+#define MOTOR_PORT_SHOOTER_REV2		5
 
 int shooterFlag = 0;
 int shooterTargetSpeed = 0;
@@ -32,7 +32,7 @@ void shooterEncoderInterruptHandler (unsigned char pin) {
  */
 void updateShooterSpeed() {
 	int encoderTicks = encoderGet(shooterEncoder);
-	shooterSpeed = ((encoderTicks / (360.0 * 4)) / 0.01)*-60;
+	shooterSpeed = ((encoderTicks / (360.0 * 4)) / 0.02)*-60;
 	encoderReset(shooterEncoder);
 //	shooterSpeed = ((shooterEncoderTicks / (360.0)) / (0.01 / 60));
 //	shooterEncoderTicks = 0;
@@ -53,7 +53,7 @@ void runShooterControlLoop() {
 //			setShooterMotor(89);
 //			printf(".7 %f %d\n\r", shooterSpeed, shooterTargetSpeed);
 //		} else if (fabsf(error) < 200) {
-//			if (error < 0){
+//			                                                                                                                    if (error < 0){
 //				setShooterMotor(114);
 //				printf(".9 %f %d\n\r", shooterSpeed, shooterTargetSpeed);
 //			}
@@ -77,20 +77,21 @@ void runShooterControlLoop() {
 //	}
 	if (shooterTargetSpeed != 0) {
 		float error = (shooterSpeed - shooterTargetSpeed) * -1;
-		float Kp = .00017;
+		float Kp = 0.0004
+;
 		float feedForward;
 		if (shooterTargetSpeed == SHOOTER_SPEED_SHORT) {
-			  feedForward = 0;
+			  feedForward = 1;
 		}
 		else if (shooterTargetSpeed == SHOOTER_SPEED_MID) {
 			feedForward = .59;
 		}
 		else {
-			feedForward = 1;
+			feedForward = .46;
 		}
 		float power = ((error * Kp) + feedForward) * 127;
 		setShooterMotor(power);
-		printf("%f \n\r", shooterSpeed);
+		printf("%f \n\r",shooterSpeed);
 	}
 	else {
 		setShooterMotor(0);

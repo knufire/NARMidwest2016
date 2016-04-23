@@ -48,6 +48,16 @@ void driveVector(Vector translate, float rotation) {
 	driveMotor(leftWheelPower, rightWheelPower, backWheelPower);
 }
 
+void driveGyro2(Vector translate, float rotation) {
+	if (fabs(rotation) > 0.05) {// If we're rotating, ignore gyro and just do
+			driveVector(translate, rotation);	// normal open loop driving.
+			setDesiredHeading();
+	}
+	else {
+		driveVector(translate, getGyroCorrection());
+	}
+}
+
 void driveGyro(Vector translate, float rotation) {
 	//TODO: On falling edge of rotation stick, reset the integral term in the gyro correction PID loop
 
@@ -56,7 +66,7 @@ void driveGyro(Vector translate, float rotation) {
 		setDesiredHeading();
 	} else {
 		//Calculate gyro correction from PID loop and drive motor power like normal
-		float gyroCorrection = getGyroCorrection();
+		float gyroCorrection = -getGyroCorrection();
 		float leftWheelPower = scalarProjection(translate,
 		leftWheelVector) + rotation * TURNING_SPEED;
 		float rightWheelPower = scalarProjection(translate,

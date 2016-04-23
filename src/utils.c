@@ -102,7 +102,7 @@ float pidController(float Kp, float Ki, float Kd, float dt, float setpoint,
 	errorSum += error;
 
 	float output = p + i + d;
-	output = limit(output, -1, 1);
+	output = limit(output, -127, 127);
 
 	return output;
 }

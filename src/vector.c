@@ -74,4 +74,3 @@ Vector rotate(Vector vec, float angle) {
 	result.y = vec.x * sin(angle) - vec.y * cos(angle);
 	return result;
 }
-
