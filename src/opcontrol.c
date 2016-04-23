@@ -18,6 +18,8 @@ int intakeState = 0;
 int lastIntakeState = 0;
 float intakePulseStartTime = 0;
 
+int conveyorState = 0;
+
 //Change to true to enable field-centric drive
 bool fieldCentricDrive = false;
 
@@ -218,6 +220,14 @@ void updateIntake() {
 
 
 	lastIntakeState = intakeState;
+
+	bool conveyorOut = joystickGetDigital(1,7,JOY_UP);
+	bool conveyorIn = joystickGetDigital(1,7,JOY_DOWN);
+
+	conveyorState = latchFlag(conveyorOut, conveyorIn, conveyorState);
+
+	motorSet(2, conveyorState*127);
+	motorSet(9, -conveyorState);
 }
 
 
